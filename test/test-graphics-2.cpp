@@ -8,7 +8,7 @@
 #include <utility>
 
 /* test_graphics_2
-   full screen redraw 30 x 8 scan lines synchronised at 100FPS
+   full screen redraw 240 scan lines synchronised at 70FPS
    provided you can fetch 8 lines at a time (always true if running a framebuffer), this
    is a better idea than drawing each scan line in its own slot, because there is a small overhead
    to setup the display draw window (at least 700 or 800us to invoke caset(), raset() and memrw())
@@ -19,7 +19,7 @@ static constexpr unsigned int bit_rd   = 1 << TFT_RD;
 static constexpr unsigned int bit_wr   = 1 << TFT_WR;
 static constexpr unsigned int bit_rst  = 1 << TFT_RST;
 static constexpr unsigned int bit_dbg  = 1 << TFT_DBG;
-static constexpr unsigned int bit_data = 0x0000ff00;
+static constexpr unsigned int bit_data = 0x0000ff00;     // need to move this bitch up 8 bits to free the pins for SPI1
 
 static constexpr int g_screen_width = 320;
 static constexpr int g_screen_height = 240;
