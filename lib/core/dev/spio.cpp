@@ -35,7 +35,11 @@ static constexpr unsigned int spio1_pin_rx  = 12;
 static constexpr unsigned int spio1_pin_tx  = 11;
 static constexpr unsigned int spio1_pin_sck = 10;
 
+// SD initialises at a lower rate, specify what that is
 static constexpr unsigned int spio_init_rate = 1000000;
+
+// some commands may initially fail (mandated by the SD specs); retry after this short delay
+static constexpr unsigned int spio_throttle_us = 512;
 
 static constexpr bool         spio_use_crc = false;
 static constexpr bool         spio_use_dma = false;
@@ -209,9 +213,8 @@ bool  spio::dev_load_sb(std::uint8_t* data, std::uint32_t sector) noexcept
               return false;
           }
           l_try--;
-          // throttle and retry if any tries left
           if(l_try) {
-              busy_wait_us_32(150);
+              busy_wait_us_32(spio_throttle_us);
           }
       }
       return false;
@@ -253,7 +256,9 @@ bool  spio::dev_reset() const noexcept
 bool  spio::resume() noexcept
 {
       if(m_ready == false) {
+          busy_wait_us(2048);
           bus_hold();
+          busy_wait_us(6144);
           if(dev_reset()) {
               std::uint32_t l_wait = 255;
               std::uint32_t l_mode = 0;

@@ -43,9 +43,6 @@ class fio: public sys::ios
           void   assign(fio&&) noexcept;
 
   public:
-  static constexpr int undef = -1;
-
-  public:
           fio() noexcept;
           fio(sys::drive*, const char*, long int = O_RDWR, long int = 0777) noexcept;
           fio(const fio&) noexcept;

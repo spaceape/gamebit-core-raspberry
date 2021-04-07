@@ -20,7 +20,26 @@ bool  test_fat_01()
       sys::fat::partition l_part0(std::addressof(l_sda), 0);
 
       // open a file on the partition
-      sys::fio(std::addressof(l_part0), "dummy.txt", O_RDWR, 0777);
+      sys::fio l_file(std::addressof(l_part0), "dummy.txt", O_RDWR, 0777);
+
+      char data[256];
+      int  read_size;
+      int  read_offset = 0;
+      while(read_offset < l_file.get_size()) {
+          read_size = l_file.read(256, data);
+          if(read_size) {
+              for(int index = 0; index < read_size; index++) {
+                  auto value = data[index];
+                  if(value > 31 && value < 127) {
+                      printf("%c  ", value);
+                  } else
+                      printf("%.2x ", value);
+              }
+              printf("\n");
+          } else
+              break;
+          read_offset += read_size;
+      }
 
       return true;
 }

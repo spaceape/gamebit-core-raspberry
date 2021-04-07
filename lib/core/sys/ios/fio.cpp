@@ -40,7 +40,6 @@ namespace sys {
       if(drive) {
           l_index = drive->get_fsi(name, mode, permissions);
           if(l_index.m_address) {
-              //xxx
               m_drive = drive;
               m_mode = mode & 0x0000ffff;
               m_address = l_index.m_address;
@@ -188,10 +187,14 @@ int   fio::read(std::size_t count, char* memory) noexcept
                   l_read_left = count;
               } else
                   l_read_left = m_size - m_offset;
-              // read data and copy into the memory buffer
+              // read data and copy into the memory buffer;
+              // get_raw may return more or less than the required size, make the necessary adjustments as well
               while(l_read_left) {
                   l_read_size = m_drive->get_raw(l_read_ptr, m_address, m_offset, l_read_left);
                   if(l_read_size) {
+                      if(l_read_size > l_read_left) {
+                          l_read_size = l_read_left;
+                      }
                       std::memcpy(l_copy_ptr, l_read_ptr, l_read_size);
                       l_copy_ptr += l_read_size;
                       l_copy_size += l_read_size;
