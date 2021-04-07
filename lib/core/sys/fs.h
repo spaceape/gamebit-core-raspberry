@@ -22,7 +22,21 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include <os.h>
+#include <sys.h>
 
 namespace sys {
+
+/* fsi_t
+   filesystem index node
+*/
+struct fsi_t
+{
+  std::uint32_t  m_dir_bit:1;         // index is part of a directory
+  std::uint32_t  m_file_bit:1;        // index has content
+  std::uint32_t  m_address:28;        // base cluster for FAT (or a locating feature for other FS)
+  std::uint32_t  m_size;
+  fsi_t*         m_parent;
+};
+
 /*namespace sys*/ }
 #endif

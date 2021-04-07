@@ -1,5 +1,5 @@
-#ifndef dev_fat_partition_h
-#define dev_fat_partition_h
+#ifndef sys_fio_h
+#define sys_fio_h
 /** 
     Copyright (c) 2021, wicked systems
     All rights reserved.
@@ -23,49 +23,65 @@
 **/
 #include <sys.h>
 #include <sys/fs.h>
-#include <sys/fs/raw/drive.h>
+#include <sys/ios.h>
 
-namespace sys {
-namespace fat {
-
-/* part
+/* fio
+   file IO via the fs API
 */
-class partition: public sys::drive
+namespace sys {
+
+class fio: public sys::ios
 {
-  unsigned int   m_type:8;
-  unsigned int   m_part_id:8;
-  unsigned int   m_bps:16;         // bytes per sector
-  unsigned int   m_spc:8;          // sectors per cluster
-  unsigned int   m_fat_bits:8;     // FAT entry bits       
-  int            m_status:4;
-  int            m_part_base;      // partition base sector
-  int            m_part_size;      // partition size, in sectors
-  int            m_fat_base;
-  int            m_fat_size;
-  int            m_data_base;      // data base sector
-  int            m_data_size;      // data sectors
-  fsi_t          m_root_node;
+  sys::drive*   m_drive;
+  long int      m_mode;
+  std::uint32_t m_address;
+  long int      m_offset;
+  long int      m_size;
 
   protected:
-          fsi_t  fat_get_null() noexcept;
-          fsi_t  fat_get_root(std::uint32_t) noexcept;
-          bool   fat_load_map(std::uint32_t) noexcept;
-          bool   fat_load_file(std::uint32_t, std::uint32_t) noexcept;
-          bool   fat_seek_next(char*, fsi_t&, fsi_t&) noexcept;
-          fsi_t  fat_seek(const char*) noexcept;
+          void   assign(const fio&) noexcept;
+          void   assign(fio&&) noexcept;
 
   public:
-          partition(dev::block*, int) noexcept;
-          partition(const partition&) noexcept;
-          partition(partition&&) noexcept;
-          ~partition();
-  virtual fsi_t       get_fsi(const char*, long int, long int) noexcept override;
-  virtual std::size_t get_raw(std::uint8_t*&, std::uint32_t, std::uint32_t, std::size_t) noexcept override;
-  virtual std::size_t set_raw(std::uint8_t*&, std::uint32_t, std::uint32_t, std::size_t) noexcept override;
-          partition& operator=(const partition&) noexcept;
-          partition& operator=(partition&&) noexcept;
-};
+  static constexpr int undef = -1;
 
-/*namespace fat*/ }
+  public:
+          fio() noexcept;
+          fio(sys::drive*, const char*, long int = O_RDWR, long int = 0777) noexcept;
+          fio(const fio&) noexcept;
+          fio(fio&&) noexcept;
+  virtual ~fio();
+
+  virtual int   get_char() noexcept override;
+  virtual unsigned int  get_byte() noexcept override;
+
+  virtual int   seek(int, int) noexcept override;
+  virtual int   read(std::size_t) noexcept override;
+  virtual int   read(std::size_t, char*) noexcept override;
+
+  virtual int   put_char(char) noexcept override;
+  virtual int   put_byte(unsigned char) noexcept override;
+
+  virtual int   write(std::size_t, const char*) noexcept override;
+
+  virtual int   get_size() noexcept override;
+
+          bool  set_blocking(bool = true) noexcept;
+          bool  set_nonblocking() noexcept;
+
+  virtual bool  is_seekable() const noexcept override;
+  virtual bool  is_readable() const noexcept override;
+  virtual bool  is_writable() const noexcept override;
+
+          void  reset() noexcept;
+          void  release() noexcept;
+          void  close(bool = true) noexcept;
+
+          operator ios*() noexcept;
+          operator bool() const noexcept;
+
+          fio& operator=(const fio&) noexcept;
+          fio& operator=(fio&&) noexcept;
+};
 /*namespace sys*/ }
 #endif

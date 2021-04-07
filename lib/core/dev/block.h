@@ -41,11 +41,11 @@ class block
           block(const block&) noexcept;
           block(block&&) noexcept;
           ~block();
-  virtual bool   load(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept = 0;
-  virtual bool   save(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept = 0;
-  virtual int    get_status() const noexcept = 0;
-          block& operator=(const block&) noexcept;
-          block& operator=(block&&) noexcept;
+  virtual bool     load(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept = 0;
+  virtual bool     save(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept = 0;
+  virtual int      get_status() const noexcept = 0;
+          block&   operator=(const block&) noexcept;
+          block&   operator=(block&&) noexcept;
 };
 
 /*namespace dev*/ }

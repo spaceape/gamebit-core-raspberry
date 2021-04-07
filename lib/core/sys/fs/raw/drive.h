@@ -1,5 +1,5 @@
-#ifndef sys_raw_filesystem_h
-#define sys_raw_filesystem_h
+#ifndef sys_raw_drive_h
+#define sys_raw_drive_h
 /** 
     Copyright (c) 2021, wicked systems
     All rights reserved.
@@ -22,6 +22,7 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include <sys.h>
+#include <sys/fs.h>
 #include <dev.h>
 
 namespace sys {
@@ -29,13 +30,12 @@ namespace sys {
 struct mbr_t;
 struct pbr_t;
 
-namespace raw {
-
-/* filesystem
+/* drive
+   instance of a partition on a block device
 */
-class filesystem
+class drive
 {
-  dev::block*     p_dev;
+  dev::block*     p_device;
   std::uint32_t   m_sector;
 
   protected:
@@ -53,19 +53,23 @@ class filesystem
           void    dump_cache() noexcept;
 
   public:
-          filesystem(dev::block*) noexcept;
-          filesystem(const filesystem&) noexcept;
-          filesystem(filesystem&&) noexcept;
-          ~filesystem();
+          drive(dev::block*) noexcept;
+          drive(const drive&) noexcept;
+          drive(drive&&) noexcept;
+          ~drive();
           mbr_t*        get_mbr() noexcept;
           pbr_t*        get_pbr(int) noexcept;
           pbr_t*        get_pbr(int, std::uint32_t&, std::uint32_t&) noexcept;
           std::uint8_t* get_raw(std::uint32_t) noexcept;
+
+  virtual fsi_t         get_fsi(const char*, long int, long int) noexcept = 0;
+  virtual std::size_t   get_raw(std::uint8_t*&, std::uint32_t, std::uint32_t, std::size_t) noexcept = 0;
+  virtual std::size_t   set_raw(std::uint8_t*&, std::uint32_t, std::uint32_t, std::size_t) noexcept = 0;
+
           std::uint32_t get_current_sector() noexcept;
-          filesystem& operator=(const filesystem&) noexcept;
-          filesystem& operator=(filesystem&&) noexcept;
+          drive& operator=(const drive&) noexcept;
+          drive& operator=(drive&&) noexcept;
 };
 
-/*namespace raw*/ }
 /*namespace sys*/ }
 #endif

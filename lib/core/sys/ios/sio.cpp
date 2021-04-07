@@ -22,6 +22,8 @@
 #include "sio.h"
 #include <cstring>
 
+namespace sys {
+
       sio::sio(std::size_t size) noexcept:
       sio(fragment::get_default(), size)
 {
@@ -479,3 +481,5 @@ sio&  sio::operator=(sio&& rhs) noexcept
       assign(std::move(rhs));
       return *this;
 }
+
+/*namespace sys*/ }

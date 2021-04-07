@@ -27,6 +27,8 @@
 /* rio
    repeater io
 */
+namespace sys {
+
 class rio: public sys::ios
 {
   ios*    m_io;
@@ -74,4 +76,5 @@ class rio: public sys::ios
           rio& operator=(const rio&) noexcept;
           rio& operator=(rio&&) noexcept;
 };
+/*namespace sys*/ }
 #endif

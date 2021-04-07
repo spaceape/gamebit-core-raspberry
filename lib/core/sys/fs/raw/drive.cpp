@@ -19,58 +19,57 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-#include "filesystem.h"
+#include "drive.h"
 #include "raw.h"
 #include "mbr.h"
 #include <dev/block.h>
 
 namespace sys {
-namespace raw {
 
-      filesystem::filesystem(dev::block* dev) noexcept:
-      p_dev(dev),
+      drive::drive(dev::block* device) noexcept:
+      p_device(device),
       m_sector(s_sector_undef)
 {
 }
 
-      filesystem::filesystem(const filesystem& copy) noexcept:
-      p_dev(copy.p_dev),
+      drive::drive(const drive& copy) noexcept:
+      p_device(copy.p_device),
       m_sector(s_sector_undef)
 {
 }
 
-      filesystem::filesystem(filesystem&& copy) noexcept:
-      p_dev(copy.p_dev),
+      drive::drive(drive&& copy) noexcept:
+      p_device(copy.p_device),
       m_sector(s_sector_undef)
 {
 }
 
-      filesystem::~filesystem()
+      drive::~drive()
 {
 }
 
-bool  filesystem::load_sector(std::uint32_t index) noexcept
+bool  drive::load_sector(std::uint32_t index) noexcept
 {
       if(index == m_sector) {
           return true;
       }
-      if(p_dev->load(m_cache, index, s_sector_size)) {
+      if(p_device->load(m_cache, index, s_sector_size)) {
           m_sector = index;
           return true;
       }
       return false;
 }
 
-bool  filesystem::save_sector(std::uint32_t index) noexcept
+bool  drive::save_sector(std::uint32_t index) noexcept
 {
-      if(p_dev->save(m_cache, index, s_sector_size)) {
+      if(p_device->save(m_cache, index, s_sector_size)) {
           m_sector = index;
           return true;
       }
       return false;
 }
 
-void  filesystem::dump_sector(std::uint32_t sector) noexcept
+void  drive::dump_sector(std::uint32_t sector) noexcept
 {
       if(load_sector(sector)) {
           dump_cache();
@@ -78,7 +77,7 @@ void  filesystem::dump_sector(std::uint32_t sector) noexcept
           printf("--- part:%p: Failed to download sector %.6lx\n", this, sector);
 }
 
-void  filesystem::dump_cache() noexcept
+void  drive::dump_cache() noexcept
 {
       for(int y = 0; y < 32; y++) {
           for(int x = 0; x < 16; x++) {
@@ -92,7 +91,7 @@ void  filesystem::dump_cache() noexcept
       }
 }
 
-mbr_t* filesystem::get_mbr() noexcept
+mbr_t* drive::get_mbr() noexcept
 {
       if(load_sector(0)) {
           mbr_t* l_mbr = reinterpret_cast<mbr_t*>(m_cache);
@@ -104,14 +103,14 @@ mbr_t* filesystem::get_mbr() noexcept
       return nullptr;
 }
 
-pbr_t* filesystem::get_pbr(int part) noexcept
+pbr_t* drive::get_pbr(int part) noexcept
 {
         std::uint32_t l_part_sector;
         std::uint32_t l_part_size = 0u;
         return get_pbr(part, l_part_sector, l_part_size);
 }
 
-pbr_t* filesystem::get_pbr(int part, std::uint32_t& part_offset, std::uint32_t& part_count) noexcept
+pbr_t* drive::get_pbr(int part, std::uint32_t& part_offset, std::uint32_t& part_count) noexcept
 {
       if((part >= mbr::part_min) && (part <= mbr::part_max)) {
           std::uint32_t l_part_offset;
@@ -140,7 +139,7 @@ pbr_t* filesystem::get_pbr(int part, std::uint32_t& part_offset, std::uint32_t& 
       return nullptr;
 }
 
-std::uint8_t* filesystem::get_raw(std::uint32_t sector) noexcept
+std::uint8_t* drive::get_raw(std::uint32_t sector) noexcept
 {
       if(load_sector(sector)) {
           return m_cache;
@@ -148,22 +147,21 @@ std::uint8_t* filesystem::get_raw(std::uint32_t sector) noexcept
       return nullptr;
 }
 
-std::uint32_t filesystem::get_current_sector() noexcept
+std::uint32_t drive::get_current_sector() noexcept
 {
       return m_sector;
 }
 
-filesystem& filesystem::operator=(const filesystem& rhs) noexcept
+drive& drive::operator=(const drive& rhs) noexcept
 {
-      p_dev = rhs.p_dev;
+      p_device = rhs.p_device;
       return *this;
 }
 
-filesystem& filesystem::operator=(filesystem&& rhs) noexcept
+drive& drive::operator=(drive&& rhs) noexcept
 {
-      p_dev = rhs.p_dev;
+      p_device = rhs.p_device;
       return *this;
 }
 
-/*namespace raw*/ }
 /*namespace sys*/ }

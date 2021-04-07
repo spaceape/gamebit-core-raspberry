@@ -20,9 +20,8 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "partition.h"
-#include <sys/fs/fat/fat.h>
 #include <sys/fs/raw/mbr.h>
-#include <dev/block.h>
+#include <sys/fs/fat/fat.h>
 #include <util.h>
 #include <cstring>
 
@@ -104,8 +103,8 @@ int   fat_copy_name(char* name, dir_t* dir) noexcept
       return l_di;
 }
 
-      partition::partition(dev::block* dev, int part) noexcept:
-      filesystem(dev),
+      partition::partition(dev::block* device, int part) noexcept:
+      drive(device),
       m_type(0),
       m_part_id(0),
       m_bps(0),
@@ -165,12 +164,12 @@ int   fat_copy_name(char* name, dir_t* dir) noexcept
 }
 
       partition::partition(const partition& copy) noexcept:
-      filesystem(copy)
+      drive(copy)
 {
 }
 
       partition::partition(partition&& copy) noexcept:
-      filesystem(std::move(copy))
+      drive(std::move(copy))
 {
 }
 
@@ -178,6 +177,19 @@ int   fat_copy_name(char* name, dir_t* dir) noexcept
 {
 }
 
+/* fat_get_null()
+   return an empty index
+*/
+fsi_t partition::fat_get_null() noexcept
+{
+      fsi_t  l_result;
+      l_result.m_dir_bit = 0u;
+      l_result.m_file_bit = 0u;
+      l_result.m_address = 0;
+      l_result.m_parent = nullptr;
+      l_result.m_size = 0;
+      return l_result;
+}
 /* fat_get_root()
    find the root directory chain in the FAT
 */
@@ -186,8 +198,9 @@ fsi_t partition::fat_get_root(std::uint32_t cluster) noexcept
       fsi_t  l_result;
       l_result.m_dir_bit = 1u;
       l_result.m_file_bit = 0u;
-      l_result.m_base = cluster;
+      l_result.m_address = cluster;
       l_result.m_parent = nullptr;
+      l_result.m_size = 0;
       return l_result;
 }
 
@@ -290,7 +303,7 @@ bool  partition::fat_seek_next(char* name, fsi_t& root, fsi_t& result) noexcept
               // traverse all the entries in the directory
               while(l_name_found == false) {
                   if((l_read_index % l_read_fragment) == 0) {
-                      if(fat_load_file(root.m_base, l_read_sector) == false) {
+                      if(fat_load_file(root.m_address, l_read_sector) == false) {
                           break;
                       }
                       l_read_ptr = reinterpret_cast<dir_t*>(m_cache);
@@ -310,7 +323,8 @@ bool  partition::fat_seek_next(char* name, fsi_t& root, fsi_t& result) noexcept
                       if(std::strncmp(l_name_ptr, name, sizeof(l_name_ptr)) == 0) {
                           l_node.m_dir_bit = 0u;
                           l_node.m_file_bit = 1u;
-                          l_node.m_base = (l_read_ptr->m_cluster_h << 16) | l_read_ptr->m_cluster_l;
+                          l_node.m_address = (l_read_ptr->m_cluster_h << 16) | l_read_ptr->m_cluster_l;
+                          l_node.m_size = l_read_ptr->m_size;
                           l_node.m_parent = std::addressof(root);
                           if(l_read_ptr->m_attributes & dir_attr_directory) {
                               l_node.m_dir_bit = 1u;
@@ -332,12 +346,11 @@ bool  partition::fat_seek_next(char* name, fsi_t& root, fsi_t& result) noexcept
 
 /* fat_seek()
 */
-bool  partition::fat_seek(const char* path) noexcept
+fsi_t partition::fat_seek(const char* path) noexcept
 {
       char*  l_path_ptr;
-      fsi_t  l_index;
-      fsi_t  l_node = m_root_node;
-      bool   l_result = false;
+      fsi_t  l_root   = m_root_node;
+      fsi_t  l_result;
 
       // setup path buffer
       if(path) {
@@ -351,38 +364,63 @@ bool  partition::fat_seek(const char* path) noexcept
                       std::memset(l_path_ptr, 0, l_path_size);
                       std::strncpy(l_path_ptr, path, l_path_size);
                   } else
-                      return false;
+                      return fat_get_null();
               } else
-                  return false;
+                  return fat_get_null();
           } else
               l_path_ptr = nullptr;
       } else
           l_path_ptr = nullptr;
 
-      // traverse path and return l_node
-      if(fat_seek_next(l_path_ptr, l_node, l_index)) {
-          if(fat_load_file(l_index.m_base, 0)) {
-              dump_cache();
-              l_result = true;
-          }
+      // traverse path and return l_result
+      if(fat_seek_next(l_path_ptr, l_root, l_result)) {
+          return l_result;
       }
       if(l_path_ptr) {
           free(l_path_ptr);
       }
-      return l_result;
+      return fat_get_null();
 }
 
-void* partition::open(const char* path) noexcept
+fsi_t partition::get_fsi(const char* path, long int, long int) noexcept
 {
       if(m_status == 0) {
-          fat_seek(path);
-      }
-      return nullptr;
+          return fat_seek(path);
+      } 
+      return fat_get_null();
 }
 
-void* partition::close() noexcept
+/* get_raw()
+   get <size> bytes of raw partition data at given <offset> from file with base cluster <address>;
+   return the number of bytes read - no more than one sector size or whatever can be obtained in a single read,
+   depending on the specified <offset>, but no less than one byte;
+   a return value of zero indicates an error (data could not be retrieved)
+*/
+std::size_t partition::get_raw(std::uint8_t*& data, std::uint32_t address, std::uint32_t offset, std::size_t size) noexcept
 {
-      return nullptr;
+      std::uint32_t l_sector;
+      std::uint32_t l_offset;
+      if(size) {
+          l_sector = offset / m_bps;
+          l_offset = offset % m_bps;
+          if(fat_load_file(address, l_sector)) {
+              data = m_cache + l_offset;
+              return m_bps - l_offset;
+          }
+      }
+      data = nullptr;
+      return 0u;
+}
+
+/* set_raw() - not implemented
+   write <size> raw bytes to partition data at given <offset> relative to the file with base cluster <address>;
+   return the number of bytes written;
+   a return value of zero indicates an error (data could not be written)
+*/
+std::size_t partition::set_raw(std::uint8_t*& data, std::uint32_t, std::uint32_t, std::size_t) noexcept
+{
+      data = nullptr;
+      return 0u;
 }
 
 partition& partition::operator=(const partition&) noexcept

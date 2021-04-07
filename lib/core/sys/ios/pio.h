@@ -27,7 +27,9 @@
 /* pio
    unbuffered io with a rudimentary lexer interface
 */
-class pio: public sys::ios
+namespace sys {
+
+class pio: public ios
 {
   ios*    m_io;
   int     m_char;
@@ -85,4 +87,5 @@ class pio: public sys::ios
           pio&  operator=(const pio&) noexcept;
           pio&  operator=(pio&&) noexcept;
 };
+/*namespace sys*/ }
 #endif

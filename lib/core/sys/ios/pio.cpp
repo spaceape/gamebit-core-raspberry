@@ -23,6 +23,8 @@
 #include "sio.h"
 #include <cstring>
 
+namespace sys {
+
       constexpr char s_ident_0[] = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
       constexpr char s_ident_1[] = "0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -562,3 +564,6 @@ pio&  pio::operator=(pio&& rhs) noexcept
       rhs.release();
       return *this;
 }
+
+/*namespace sys*/ }
+

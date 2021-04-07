@@ -21,6 +21,8 @@
 **/
 #include "rio.h"
 
+namespace sys {
+
       rio::rio() noexcept:
       ios(),
       m_io(nullptr)
@@ -152,3 +154,6 @@ rio& rio::operator=(rio&& rhs) noexcept
       rhs.release();
       return *this;
 }
+
+/*namespace sys*/ }
+

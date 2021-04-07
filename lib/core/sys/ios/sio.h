@@ -28,6 +28,8 @@
 /* sio
    static data buffer
 */
+namespace sys {
+
 class sio: public sys::ios
 {
   fragment* m_resource;
@@ -93,4 +95,5 @@ class sio: public sys::ios
           sio& operator=(const sio&) noexcept;
           sio& operator=(sio&&) noexcept;
 };
+/*namespace sys*/ }
 #endif

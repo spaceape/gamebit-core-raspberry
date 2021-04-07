@@ -28,6 +28,8 @@
 /* bio
    buffered io
 */
+namespace sys {
+
 class bio: public sys::ios
 {
   ios*          m_io;
@@ -108,4 +110,5 @@ class bio: public sys::ios
           bio& operator=(const bio&) noexcept;
           bio& operator=(bio&&) noexcept;
 };
+/*namespace sys*/ }
 #endif

@@ -22,6 +22,8 @@
 #include "bio.h"
 #include <cstring>
 
+namespace sys {
+
       constexpr long int s_lock_max = 255;
     //constexpr long int s_read_min = 64;
       constexpr long int s_read_max = std::numeric_limits<std::size_t>::max() / 4;
@@ -816,3 +818,6 @@ bio&  bio::operator=(bio&& rhs) noexcept
       }
       return *this;
 }
+
+/*namespace sys*/ }
+

@@ -6,8 +6,8 @@ set(inc)
 
 set(srcs
   dev/block.cpp dev/spio.cpp
-  sys/fs/raw/filesystem.cpp sys/fs/fat/partition.cpp sys/fs/fat/node.cpp
-  sys/sys.cpp sys/ios/ios.cpp sys/ios/rio.cpp sys/ios/sio.cpp sys/ios/bio.cpp sys/ios/pio.cpp
+  sys/fs/raw/drive.cpp sys/fs/fat/partition.cpp sys/fs/fat/node.cpp
+  sys/sys.cpp sys/ios/ios.cpp sys/ios/rio.cpp sys/ios/sio.cpp sys/ios/bio.cpp sys/ios/pio.cpp sys/ios/fio.cpp
   memory/memory.cpp
   error.cpp log.cpp
 )

@@ -8,7 +8,7 @@ include_directories(
 set(IOS_SRC_DIR ${SYS_SRC_DIR}/${NAME})
 
 set(inc
-  rio.h sio.h bio.h pio.h
+  rio.h sio.h bio.h pio.h fio.h
 )
 
 if(SDK)
