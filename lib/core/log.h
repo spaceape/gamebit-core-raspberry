@@ -22,18 +22,17 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "global.h"
-// #include "sys.h"
-// #include "sys/ios.h"
+#include <stdio.h>
 
 template<typename... Args>
 void  printlog(Args&&... args) noexcept {
-      // stdio->put(std::forward<Args>(args)...);
+      printf(std::forward<Args>(args)...);
 }
 
 template<typename... Args>
 void  printdbg(Args&&... args) noexcept {
-// #ifndef NDEBUG
-//       stdio->put(std::forward<Args>(args)...);
-// #endif
+#ifndef NDEBUG
+      printf(std::forward<Args>(args)...);
+#endif
 }
 #endif

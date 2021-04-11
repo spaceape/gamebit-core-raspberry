@@ -20,9 +20,3 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "error.h"
-#include "log.h"
-
-extern "C"
-void __cxa_pure_virtual()
-{
-}

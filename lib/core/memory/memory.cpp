@@ -51,17 +51,11 @@ void* aligned_alloc(std::size_t size, std::size_t) noexcept
       return malloc(size);
 }
 
-namespace memory {
-/*namespace memory*/ }
+namespace mem {
+/*namespace mem*/ }
 
 static heap       s_heap;
 static fragment*  s_default_fragment = std::addressof(s_heap);
-
-namespace std {
-
-const  nothrow_t  nothrow;
-
-/*namespace std*/ }
 
 /* resource
 */
@@ -128,12 +122,12 @@ resource& resource::operator=(resource&&) noexcept
 {
 }
 
-void* fragment::reallocate(void*, std::size_t, std::size_t, std::size_t, memory::fixed) noexcept
+void* fragment::reallocate(void*, std::size_t, std::size_t, std::size_t, mem::fixed) noexcept
 {
       return nullptr;
 }
 
-void* fragment::reallocate(void*, std::size_t, std::size_t, std::size_t, memory::expand_throw)
+void* fragment::reallocate(void*, std::size_t, std::size_t, std::size_t, mem::expand_throw)
 {
       #ifdef __EXCEPTIONS
       throw  std::length_error("memory boundaries exceeded");
@@ -207,7 +201,7 @@ bool  heap::do_is_equal(const resource&) const noexcept
       return true;
 }
 
-void* heap::reallocate(void* p, std::size_t, std::size_t new_size, std::size_t align, memory::fixed) noexcept
+void* heap::reallocate(void* p, std::size_t, std::size_t new_size, std::size_t align, mem::fixed) noexcept
 {
       if(p) {
           return nullptr;
@@ -215,7 +209,7 @@ void* heap::reallocate(void* p, std::size_t, std::size_t new_size, std::size_t a
           return aligned_alloc(align, new_size);
 }
 
-void* heap::reallocate(void* p, std::size_t size, std::size_t, std::size_t align, memory::expand_throw)
+void* heap::reallocate(void* p, std::size_t size, std::size_t, std::size_t align, mem::expand_throw)
 {
       if(p) {
       #ifdef __EXCEPTIONS
@@ -263,45 +257,4 @@ heap& heap::operator=(heap&& rhs) noexcept
 {
       fragment::operator=(std::move(rhs));
       return *this;
-}
-
-/**/
-void* operator new(std::size_t size) _GLIBCXX_USE_NOEXCEPT
-{
-      return s_default_fragment->allocate(size);
-}
-
-void* operator new[](std::size_t size) _GLIBCXX_USE_NOEXCEPT
-{
-      return s_default_fragment->allocate(size);
-}
-
-void* operator new(unsigned int size, std::nothrow_t const&) _GLIBCXX_USE_NOEXCEPT
-{
-      return s_default_fragment->allocate(size);
-}
-
-void* operator new[](unsigned int size, std::nothrow_t const&) _GLIBCXX_USE_NOEXCEPT
-{
-      return s_default_fragment->allocate(size);
-}
-
-void  operator delete(void* p) _GLIBCXX_USE_NOEXCEPT
-{
-      s_default_fragment->deallocate(p, 0);
-}
-
-void  operator delete[](void* p)  _GLIBCXX_USE_NOEXCEPT
-{
-      s_default_fragment->deallocate(p, 0);
-}
-
-void  operator delete(void* p, std::size_t) _GLIBCXX_USE_NOEXCEPT
-{
-      s_default_fragment->deallocate(p, 0);
-}
-
-void  operator delete[](void* p, std::size_t) _GLIBCXX_USE_NOEXCEPT
-{
-      s_default_fragment->deallocate(p, 0);
 }

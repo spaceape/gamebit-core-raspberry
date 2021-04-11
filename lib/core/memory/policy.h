@@ -23,7 +23,7 @@
 **/
 #include <memory.h>
 
-namespace memory {
+namespace mem {
 
 /* fixed policy: reallocate() fails
 */
@@ -43,5 +43,5 @@ struct  expand_throw
 {
 };
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

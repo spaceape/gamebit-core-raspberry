@@ -25,7 +25,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-namespace memory {
+namespace mem {
 
 /* pool
    memory pool
@@ -214,5 +214,5 @@ class pool<char, Rt>: public pool_base<char, Rt>
           pool& operator=(pool&&) noexcept = delete;
 };
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

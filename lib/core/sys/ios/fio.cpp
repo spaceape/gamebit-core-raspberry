@@ -20,7 +20,7 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "fio.h"
-#include <sys/fs/raw/drive.h>
+#include <limits>
 
 namespace sys {
 
@@ -36,9 +36,9 @@ namespace sys {
       fio::fio(sys::drive* drive, const char* name, long int mode, long int permissions) noexcept:
       fio()
 {
-      sys::fsi_t l_index;
+      sys::index l_index;
       if(drive) {
-          l_index = drive->get_fsi(name, mode, permissions);
+          l_index = drive->get_index(name, mode, permissions);
           if(l_index.m_address) {
               m_drive = drive;
               m_mode = mode & 0x0000ffff;
@@ -183,7 +183,7 @@ int   fio::read(std::size_t count, char* memory) noexcept
       if(m_drive) {
           if(m_offset < m_size - 1) {
               // compute maximum read size and correct if it exceeds the file boundaries
-              if(m_offset + count <= m_size) {
+              if(m_size > static_cast<long int>(m_offset + count)) {
                   l_read_left = count;
               } else
                   l_read_left = m_size - m_offset;
@@ -291,7 +291,7 @@ void  fio::close(bool reset) noexcept
 
       fio::operator bool() const noexcept
 {
-      return m_drive;
+      return m_drive && m_address;
 }
 
 fio&  fio::operator=(const fio& rhs) noexcept

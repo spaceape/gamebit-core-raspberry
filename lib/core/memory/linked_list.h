@@ -23,7 +23,7 @@
 **/
 #include "linked_list_base.h"
 
-namespace memory {
+namespace mem {
 
 /* linked_list
 */
@@ -114,5 +114,5 @@ class linked_list: public linked_list_base<Xt, assume_contiguous_ptr, assume_ord
           return *this;
   }
 };
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

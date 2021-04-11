@@ -22,6 +22,8 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "log.h"
+#include <stdio.h>
+#include "fmt.h"
 
 constexpr unsigned int e_okay = 0u;
 constexpr unsigned int e_fail = 255;
@@ -35,7 +37,7 @@ constexpr unsigned int l_abort = 0x3000;
 
 template<typename... Args>
 nullptr_t error(unsigned int code, void* object, Args&&... args) noexcept {
-      // stdio->put("--- ERROR", ' ', fmt::x(code), fmt::p(object), ':', ' ', std::forward<Args>(args)...);
+      printf("-!- ERROR", ' ', fmt::x(code), fmt::p(object), ':', ' ', std::forward<Args>(args)...);
       if(code >= l_abort) {
           std::abort();
       }

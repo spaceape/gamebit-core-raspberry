@@ -22,6 +22,7 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "global.h"
+#include <stdio.h>
 
 constexpr char EOL ='\n';
 constexpr char EOS =  0;
@@ -58,7 +59,6 @@ constexpr long int O_RAW = O_BINARY;
  
 namespace sys {
 
-class drive;
 class ios;
 class rio;
 class sio;

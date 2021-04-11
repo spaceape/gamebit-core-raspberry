@@ -11,7 +11,6 @@ set(inc
   fs.h fmt.h ios.h
 )
 
-add_subdirectory(fs)
 add_subdirectory(ios)
 
 if(SDK)

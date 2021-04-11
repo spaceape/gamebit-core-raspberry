@@ -22,17 +22,17 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include <sys.h>
-#include <sys/fs.h>
 #include <sys/ios.h>
+#include <sys/raw/drive.h>
 
 /* fio
    file IO via the fs API
 */
 namespace sys {
 
-class fio: public sys::ios
+class fio: public ios
 {
-  sys::drive*   m_drive;
+  drive*        m_drive;
   long int      m_mode;
   std::uint32_t m_address;
   long int      m_offset;
@@ -44,7 +44,7 @@ class fio: public sys::ios
 
   public:
           fio() noexcept;
-          fio(sys::drive*, const char*, long int = O_RDWR, long int = 0777) noexcept;
+          fio(drive*, const char*, long int = O_RDWR, long int = 0777) noexcept;
           fio(const fio&) noexcept;
           fio(fio&&) noexcept;
   virtual ~fio();

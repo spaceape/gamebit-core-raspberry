@@ -26,7 +26,7 @@
 #include "manager/shared.h"
 #include <traits.h>
 
-namespace memory {
+namespace mem {
 
 /* has_alloc_decl<Rt>
    determine if <Rt> has a numeric "alloc_bytes" member
@@ -137,5 +137,5 @@ constexpr bool get_resizable() noexcept
     return has_realloc_decl<Rt, Args...>::value;
 }
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

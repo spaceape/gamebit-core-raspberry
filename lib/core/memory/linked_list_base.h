@@ -23,7 +23,7 @@
 **/
 #include "linked_list_traits.h"
 
-namespace memory {
+namespace mem {
 
 /* linked_list_base
  * intrusive linked list
@@ -337,5 +337,5 @@ struct linked_list_base
   }
 };
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

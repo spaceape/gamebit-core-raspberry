@@ -25,7 +25,7 @@
 #include <hash.h>
 #include <compare.h>
 
-namespace memory {
+namespace mem {
   
 template<typename Kt, typename Xt, typename Ht = std::uint64_t>
 class hash_map: protected flat_map_traits<Ht, Xt>::base_type
@@ -338,5 +338,5 @@ class hash_map: protected flat_map_traits<Ht, Xt>::base_type
           return *this;
   }
 };
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

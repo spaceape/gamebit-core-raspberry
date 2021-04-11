@@ -44,8 +44,8 @@ class heap: public fragment
           heap(heap&&) noexcept;
   virtual ~heap();
 
-  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, memory::fixed) noexcept override;
-  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, memory::expand_throw) override;
+  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, mem::fixed) noexcept override;
+  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, mem::expand_throw) override;
   virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, ...) noexcept override;
   
   virtual std::size_t get_fixed_size() const noexcept override;

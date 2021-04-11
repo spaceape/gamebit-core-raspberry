@@ -23,9 +23,10 @@
 **/
 #include <memory.h>
 #include "metrics.h"
-// #include <cstring>
+#include <cstring>
+#include <limits>
 
-namespace memory {
+namespace mem {
 
 /* pool_base
    base type for memory pool
@@ -247,7 +248,7 @@ class pool_base
      assign a value to the element identified by offset
   */
   template<typename Vt>
-  inline  node_type* raw_set(off_t offset, Vt&& value) noexcept {
+  inline  node_type* raw_set(int offset, Vt&& value) noexcept {
           node_type* l_result = at(offset);
           if(l_result) {
              *l_result = value;
@@ -299,7 +300,7 @@ class pool_base
   /* at()
      get object at given position, with bounds checking
   */
-  inline  node_type* at(off_t offset) const noexcept {
+  inline  node_type* at(int offset) const noexcept {
           if(m_base) {
               if(offset > 0) {
                   if(auto l_result = m_head + offset; l_result < m_tail) {
@@ -390,7 +391,7 @@ class pool_base
           return m_last - m_head;
   }
 
-  inline  std::size_t get_capacity(ssize_t value) const noexcept {
+  inline  std::size_t get_capacity(long int value) const noexcept {
           return get_capacity() + value;
   }
 
@@ -398,7 +399,7 @@ class pool_base
           return m_tail - m_base;
   }
 
-  inline  std::size_t get_used_size(ssize_t value) const noexcept {
+  inline  std::size_t get_used_size(long int value) const noexcept {
           return get_used_size() + value;
   }
 
@@ -406,7 +407,7 @@ class pool_base
           return m_last - m_tail;
   }
 
-  inline  std::size_t get_free_size(ssize_t value) const noexcept {
+  inline  std::size_t get_free_size(long int value) const noexcept {
           return get_free_size() + value;
   }
 
@@ -414,5 +415,5 @@ class pool_base
           pool_base& operator=(pool_base&&) noexcept = delete;
 };
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

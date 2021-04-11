@@ -31,7 +31,7 @@ namespace dev {
 
 using  spi_inst_t = spi_inst;
 
-class  block;
+class  bd;
 
 /*namespace dev*/ }
 #endif

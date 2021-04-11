@@ -36,24 +36,14 @@
 using schar = char;
 using uchar = unsigned char;
 
-namespace std {
-
-using int8_t = ::int8_t;
-using uint8_t = ::uint8_t;
-using int16_t = ::int16_t;
-using uint16_t = ::uint16_t;
-using int32_t = ::int32_t;
-using uint32_t = ::uint32_t;
-using size_t = ::size_t;
-
-/*namespace std*/}
-
 namespace global {
 
-constexpr std::size_t system_page_size = 1024u;
+/* page size: allocation size that memory:: containers use
+*/
+constexpr std::size_t system_page_size = 512u;
 
-/* enable implicit dynamic alloc */
-/* cache size to use */
+/* default cache sizes
+*/
 #ifdef CACHE_SMALL_MAX
 constexpr std::size_t cache_small_max = CACHE_SMALL_MAX;
 #else

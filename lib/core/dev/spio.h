@@ -23,15 +23,15 @@
 **/
 #include <os.h>
 #include <dev.h>
-#include "block.h"
-#include "sd.h"
+#include "bd.h"
+#include "spio/sd.h"
 
 namespace dev {
 
 /* spio
    SPI block device
 */
-class spio: public block
+class spio: public bd
 {
   spi_inst_t*   m_spi;
   std::uint8_t  m_pin_cs;
@@ -77,8 +77,8 @@ class spio: public block
           spio(spi_inst_t*, unsigned int = 1000000u) noexcept;
           spio(const spio&) noexcept = delete;
           spio(spio&&) noexcept = delete;
-          ~spio();
-          bool  resume() noexcept;
+  virtual ~spio();
+          bool  resume(unsigned int = 1000000u) noexcept;
   virtual bool  load(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept override;
   virtual bool  save(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept override;
   virtual int   get_status() const noexcept override;

@@ -22,11 +22,13 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "pool_base.h"
+#include <cstring>
+#include <limits>
 
-namespace memory {
+namespace mem {
 
 /* page
-   memory page
+   memory page - maps objects onto a fixed size memory region
 
    Xt - data type
    MapSize - map size (default: 0)
@@ -350,7 +352,7 @@ class page: public pool_base<Xt, Rt, fixed>
           return m_next;
   }
 
-  inline  page* get_next_page(off_t index) const noexcept {
+  inline  page* get_next_page(int index) const noexcept {
           page* l_page = this;
           while(index > 0) {
               l_page = l_page->get_next_page();
@@ -366,5 +368,5 @@ class page: public pool_base<Xt, Rt, fixed>
           page& operator=(page&&) noexcept = delete;
 };
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

@@ -21,6 +21,7 @@
 **/
 #include "sio.h"
 #include <cstring>
+#include <limits>
 
 namespace sys {
 

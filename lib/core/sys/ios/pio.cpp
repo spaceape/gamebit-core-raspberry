@@ -22,6 +22,7 @@
 #include "pio.h"
 #include "sio.h"
 #include <cstring>
+#include <limits>
 
 namespace sys {
 

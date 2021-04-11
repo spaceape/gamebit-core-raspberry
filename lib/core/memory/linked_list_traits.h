@@ -24,7 +24,7 @@
 #include <memory.h>
 #include <traits.h>
 
-namespace memory {
+namespace mem {
 namespace linked_list_traits {
 
   struct has_prev_impl {
@@ -289,5 +289,5 @@ namespace linked_list_traits {
   };
   
 /*namespace linked_list_traits*/ }
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

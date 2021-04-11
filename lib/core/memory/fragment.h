@@ -32,8 +32,8 @@ class fragment: public resource
           fragment(fragment&&) noexcept;
           ~fragment();
 
-  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, memory::fixed) noexcept;
-  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, memory::expand_throw);
+  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, mem::fixed) noexcept;
+  virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, mem::expand_throw);
   virtual void*  reallocate(void*, std::size_t, std::size_t, std::size_t, ...) noexcept;
 
   inline  bool   has_fixed_size() const noexcept {

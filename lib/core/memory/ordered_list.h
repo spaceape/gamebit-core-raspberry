@@ -24,7 +24,7 @@
 #include "linked_list_base.h"
 #include <compare.h>
 
-namespace memory {
+namespace mem {
 
 /* ordered_list
 */
@@ -157,5 +157,5 @@ class ordered_list: public linked_list_base<Xt, assume_contiguous_ptr, true>
   }
 };
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

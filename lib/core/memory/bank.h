@@ -23,7 +23,7 @@
 **/
 #include "page.h"
 
-namespace memory {
+namespace mem {
 
 /* bank
    memory pool
@@ -33,12 +33,12 @@ namespace memory {
    Rt - resource type (default: heap)
 */
 template<typename Xt, std::size_t PageSize, std::size_t ArraySize, typename Rt>
-class bank: public page<Xt, global::get_quotient_value(PageSize, 8), ArraySize, Rt>
+class bank: public page<Xt, get_quotient_value(PageSize, 8), ArraySize, Rt>
 {
   static_assert(PageSize > 0, "PageSize of 0 is useless.");
 
   public:
-  using  page_type     = page<Xt, global::get_quotient_value(PageSize, 8), ArraySize, Rt>;
+  using  page_type     = page<Xt, get_quotient_value(PageSize, 8), ArraySize, Rt>;
   using  base_type     = page_type;
   using  node_type     = typename base_type::node_type;
   using  resource_type = typename base_type::resource_type;
@@ -135,5 +135,5 @@ class bank: public page<Xt, global::get_quotient_value(PageSize, 8), ArraySize, 
           bank& operator=(bank&&) noexcept = delete;
 };
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 #endif

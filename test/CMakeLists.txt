@@ -16,10 +16,15 @@ add_executable(test-graphics-2 test-graphics-2.cpp)
 target_link_libraries(test-graphics-2 pico_stdlib pico_multicore)
 
 add_executable(test-graphics-3 test-graphics-3.cpp)
-target_link_libraries(test-graphics-3 pico_stdlib)
+target_link_libraries(test-graphics-3 pico_stdlib pico_multicore)
 
 add_executable(test-spi-0 test-spi-0.cpp)
 target_link_libraries(test-spi-0 pico_stdlib hardware_spi)
 
 add_executable(test-fat-1 test-fat-1.cpp)
 target_link_libraries(test-fat-1 core pico_stdlib hardware_spi)
+
+add_subdirectory(elf)
+
+add_executable(test-elf-1 test-elf-1.cpp smp.cpp)
+target_link_libraries(test-elf-1 core gbcom gbio uld)
