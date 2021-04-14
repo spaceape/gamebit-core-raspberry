@@ -10,6 +10,7 @@ include_directories(
 )
 
 set(srcs
+  target/boot.cpp
   uld.cpp target.cpp object.cpp archive.cpp elf32.cpp
 )
 

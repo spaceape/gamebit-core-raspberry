@@ -22,13 +22,20 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include <uld.h>
-#include "elf/runtime.h"
-#include "elf/memory.h"
+#include "target/runtime.h"
 
 namespace uld {
 
 class target
 {
+  public:
+          target() noexcept;
+  virtual ~target();
+  virtual bool          reserve(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept;
+  virtual rtl_address_t map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept = 0;
+  virtual rtl_address_t unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept = 0;
+  virtual bool          dispose(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept;
+  virtual void          reset() noexcept;
 };
 
 /*namespace uld*/ }

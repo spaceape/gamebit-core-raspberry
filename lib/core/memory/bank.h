@@ -28,7 +28,7 @@ namespace mem {
 /* bank
    memory pool
    Xt - data type
-   PageSize - minumum number of elements a page can hold (default: 1024)
+   PageSize - minumum number of elements a page can hold (default: 256)
    ArraySize - array size (default: 1)
    Rt - resource type (default: heap)
 */

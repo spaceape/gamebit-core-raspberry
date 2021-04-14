@@ -77,6 +77,42 @@ object::strtab& object::strtab::operator=(strtab&&) noexcept
       return *this;
 }
 
+      object::phdr::phdr() noexcept:
+      idxtab()
+{
+}
+
+      object::phdr::phdr(object* object, long int offset, long int count) noexcept:
+      idxtab(object, offset, count)
+{
+}
+
+      object::phdr::phdr(const phdr& copy) noexcept:
+      idxtab(copy)
+{
+}
+
+      object::phdr::phdr(phdr&& copy) noexcept:
+      idxtab(std::move(copy))
+{
+}
+
+      object::phdr::~phdr()
+{
+}
+
+object::phdr& object::phdr::operator=(const phdr& rhs) noexcept
+{
+      idxtab::operator=(rhs);
+      return *this;
+}
+
+object::phdr& object::phdr::operator=(phdr&& rhs) noexcept
+{
+      idxtab::operator=(std::move(rhs));
+      return *this;
+}
+
       object::shdr::shdr(object* object, long int offset, long int count) noexcept:
       idxtab(object, offset, count)
 {
@@ -197,6 +233,29 @@ char* object::bin_cache_read(long int offset, std::size_t size) noexcept
       return nullptr;
 }
 
+bool  object::bin_cache_copy(std::uint8_t* data, long int offset, std::size_t size) noexcept
+{
+      std::uint8_t* l_save_ptr = data;
+      char*         l_read_ptr;
+      long int      l_read_offset = offset;
+      long int      l_read_size;
+      while(size) {
+          if(size < s_cache_size) {
+              l_read_size = size;
+          } else
+              l_read_size = s_cache_size;
+          l_read_ptr = bin_cache_read(l_read_offset, l_read_size);
+          if(l_read_ptr) {
+              std::memcpy(l_save_ptr, l_read_ptr, l_read_size);
+              l_read_offset += l_read_size;
+              l_save_ptr    += l_read_size;
+              size          -= l_read_size;
+          } else
+              return false;
+      }
+      return true;
+}
+
 void  object::bin_cache_free() noexcept
 {
       for(int l_index = 0; l_index < s_cache_lines; l_index++) {
@@ -258,7 +317,17 @@ bool  object::load(sys::ios* io, long int base_offset) noexcept
       return m_class;
 }
 
-object::shdr   object::get_shdr() noexcept
+object::phdr   object::get_program_header() noexcept
+{
+      if(m_phoff) {
+          if(m_phnum) {
+              return phdr(this, m_load_base + m_phoff, m_phnum);
+          }
+      }
+      return phdr();
+}
+
+object::shdr   object::get_section_header() noexcept
 {
       return shdr(this, m_load_base + m_shoff, m_shnum);
 }
@@ -271,6 +340,11 @@ object::strtab object::get_strtab() noexcept
 object::symtab object::get_symtab() noexcept
 {
       return symtab();
+}
+
+bool  object::copy(std::uint8_t* data, std::uint32_t offset, std::uint32_t size) noexcept
+{
+      return bin_cache_copy(data, offset, size);
 }
 
 bool  object::reset() noexcept

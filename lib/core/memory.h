@@ -28,7 +28,7 @@ class heap;
 class resource;
 class fragment;
 
-namespace memory {
+namespace mem {
 
 template<typename Xt, typename Rt = heap, typename Pt = none>
 class pool_base;
@@ -42,7 +42,7 @@ class page;
 template<typename Xt, std::size_t PageSize = 256, std::size_t ArraySize = 1, typename Rt = heap>
 class bank;
 
-/*namespace memory*/ }
+/*namespace mem*/ }
 
 resource* get_default_resource() noexcept;
 

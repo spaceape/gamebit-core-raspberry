@@ -31,16 +31,15 @@ namespace elf32 {
 */
 class linker
 {
-  protected:
-  static constexpr unsigned int opt_allow_reloc = 1u;
+  public:
+  static constexpr unsigned int opt_erase = 1u;
+  static constexpr unsigned int opt_reloc = 8u;
+  static constexpr unsigned int opt_alloc_bss = 16u;
 
   protected:
-  segment_table_t m_segment_table;
-  symbol_table_t  m_symbol_table;
-
-  protected:
-          bool elf_import(object&, target&, unsigned int) noexcept;
-          bool elf_discard() noexcept;
+          bool  elf_import(object&, target&, unsigned int) noexcept;
+          bool  elf_discard() noexcept;
+          bool  elf_error(...) noexcept;
 
   public:
           linker() noexcept;
@@ -51,10 +50,15 @@ class linker
           linker& operator=(linker&&) noexcept = delete;
 };
 
-/*
+/* loader
 */
-class loader: public linker
+class loader
 {
+  protected:
+          bool  elf_import(object&, target&, unsigned int) noexcept;
+          bool  elf_discard() noexcept;
+          bool  elf_error(...) noexcept;
+
   public:
           loader() noexcept;
           loader(const loader&) noexcept = delete;
@@ -64,76 +68,6 @@ class loader: public linker
           loader& operator=(const loader&) noexcept = delete;
           loader& operator=(loader&&) noexcept = delete;
 };
-
-// /* base class for runtime environment setup
-// */
-// class linker
-// {
-//   public:
-//   using address_t      = ems_address_t;
-//   using segment_t      = ems_segment_t;
-//   using symbol_t       = ems_symbol_t;
-
-//   private:
-//   using segment_page_t = std::vector<segment_t>;
-//   using segment_list_t = std::vector<segment_page_t>;
-//   using symbol_page_t  = std::vector<symbol_t>;
-//   using symbol_list_t  = std::vector<symbol_page_t>;
-//   using symbol_dict_t  = std::vector<symbol_t*>;
-
-//   segment_list_t  m_memory_list;
-//   symbol_list_t   m_symbol_list;
-//   symbol_dict_t   m_symbol_map;
-//   short int       m_memory_page;
-//   short int       m_memory_index;
-//   short int       m_symbol_page;
-//   short int       m_symbol_index;
-
-//   private:
-//           void          seg_make() noexcept;
-          
-//           bool            rtl_is_mapped(std::uint8_t, std::uint32_t) const noexcept;
-//           segment_page_t& rtl_get_page(int) noexcept;
-//           rtl_segment_t&  rtl_get_segment(int, int) noexcept;
-//           rtl_segment_t&  rtl_get_segment(segment_page_t&, int) noexcept;
-
-//           // std::uint32_t ldr_seg_reserve(rtl_segment_t&) noexcept;
-//           // std::uint32_t ldr_seg_dispose(rtl_segment_t&) noexcept;
-//           rtl_address_t seg_reserve(std::uint8_t, std::uint32_t, std::uint32_t) noexcept;
-//           rtl_address_t seg_dispose(std::uint8_t, std::uint32_t, std::uint32_t) noexcept;
-
-//           void          seg_free() noexcept;
-
-//           void  rtl_make_symbol() noexcept;
-//           void  rtl_free_symbol() noexcept;
-
-//   public:
-//   static constexpr std::size_t memory_page_size = 1024;
-
-//   // memory_page_max: maximum number of segment lists (pages) allowed
-//   static constexpr int         memory_page_max = std::numeric_limits<int>::max();
-
-//   // memory_segment_max: maximum number of segments allowed in a page;
-//   // currently set such that each segment list reserves 1K of RAM
-//   static constexpr int         memory_segm_max = 1024 / sizeof(rtl_segment_t);
-
-//   protected:
-//           bool  make_region(std::uint8_t, std::uint32_t) noexcept;
-//           bool  drop_region(std::uint8_t) noexcept;
-//           bool  import(object&) noexcept;
-//           bool  reset() noexcept;
-//           bool  error(unsigned int, const char*, ...) noexcept;
-
-//   public:
-//           linker() noexcept;
-//           linker(const linker&) noexcept = delete;
-//           linker(linker&&) noexcept = delete;
-//           ~linker();
-//           // bool get_error_bits() noexcept;
-//           linker& operator=(const linker&) noexcept = delete;
-//           linker& operator=(linker&&) noexcept = delete;
-// };
-
 /*namespace elf32*/ }
 /*namespace uld*/ }
 #endif

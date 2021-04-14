@@ -19,4 +19,30 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-#include <uld.h>
+#include "target.h"
+
+namespace uld {
+
+      target::target() noexcept
+{
+}
+
+      target::~target()
+{
+}
+
+bool  target::reserve(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept
+{
+      return false;
+}
+
+bool  target::dispose(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept
+{
+      return false;
+}
+
+void  target::reset() noexcept
+{
+}
+
+/*namespace uld*/ }

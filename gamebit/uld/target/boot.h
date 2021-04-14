@@ -1,3 +1,5 @@
+#ifndef uld_target_boot_h
+#define uld_target_boot_h
 /** 
     Copyright (c) 2021, wicked systems
     All rights reserved.
@@ -20,3 +22,26 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include <uld.h>
+#include <uld/target.h>
+#include "runtime.h"
+
+namespace uld {
+
+/* boot
+   Raspberry Pico boot target
+*/
+class boot: public target
+{
+  public:
+          boot();
+          boot(const boot&) noexcept = delete;
+          boot(boot&&) noexcept = delete;
+  virtual ~boot();
+  virtual rtl_address_t map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
+  virtual rtl_address_t unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
+          boot& operator=(const boot&) noexcept = delete;
+          boot& operator=(boot&&) noexcept = delete;
+};
+
+/*namespace uld*/ }
+#endif

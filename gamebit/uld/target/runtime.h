@@ -25,21 +25,60 @@
 
 namespace uld {
 
-struct ems_address_t
+/* rsa_*
+   runtime segment/symbol attributes
+*/
+constexpr std::uint8_t   rsa_region_none = 0;
+constexpr std::uint8_t   rsa_region_rom  = 1;
+constexpr std::uint8_t   rsa_region_data = 2;
+constexpr std::uint8_t   rsa_region_code = 3;
+constexpr std::uint8_t   rsa_region = 15;
+
+constexpr std::uint8_t   rsa_mode_r = 16;
+constexpr std::uint8_t   rsa_mode_w = 32;
+constexpr std::uint8_t   rsa_mode_x = 64;
+constexpr std::uint8_t   rsa_mode_a = 128;      // allocate
+constexpr std::uint8_t   rsa_mode_rw = rsa_mode_r | rsa_mode_w;
+constexpr std::uint8_t   rsa_mode_rwa = rsa_mode_rw | rsa_mode_a;
+constexpr std::uint8_t   rsa_mode_rx = rsa_mode_r | rsa_mode_x;
+constexpr std::uint8_t   rsa_mode_rxa = rsa_mode_rx | rsa_mode_a;
+constexpr std::uint8_t   rsa_mode = rsa_mode_r | rsa_mode_w | rsa_mode_x;
+
+/* rtl_address_t
+   virtual/physical address pair
+*/
+struct rtl_address_t
 {
   std::uint32_t base;
   std::uint8_t* data;
 };
 
-struct ems_segment_t
+constexpr std::uint32_t  rsa_base_undef = 0xffffffff;  // address undefined, signals an rtl_address_t allocation error
+
+/* rsa_page_size
+   page size for segment allocation; segment sizes in bytes will be an integer multiple of this value;
+   1K seems to be a decent value for Raspberry Pico
+*/
+constexpr int            rsa_page_size  = 1024;
+
+/* rtl_segment_t
+*/
+struct rtl_segment_t
 {
-  std::uint8_t  xxx;
-  ems_address_t address;
+  std::uint8_t  attr;         // attribute flags (rsa_mode_* | rsa_region_*)
+  std::uint16_t used;
+  std::uint32_t size;         // size of the segment
+  rtl_address_t address;
 };
 
-struct ems_symbol_t
+/* rtl_symbol_t
+*/
+struct rtl_symbol_t
 {
-  std::uint8_t  xxx;
+  std::uint8_t  attributes;   // attribute flags
+  std::uint32_t size:24;
+  std::uint8_t* address;
+  // char_ptr<56>  name;
 };
 
 /*namespace uld*/ }

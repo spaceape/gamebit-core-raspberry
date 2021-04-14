@@ -157,6 +157,18 @@ class object
     }
   };
 
+  class phdr: public idxtab<Elf32_Phdr>
+  {
+    public:
+            phdr() noexcept;
+            phdr(object*, long int, long int) noexcept;
+            phdr(const phdr&) noexcept;
+            phdr(phdr&&) noexcept;
+            ~phdr();
+            phdr& operator=(const phdr&) noexcept;
+            phdr& operator=(phdr&&) noexcept;
+  };
+
   class shdr: public idxtab<Elf32_Shdr>
   {
     public:
@@ -186,6 +198,7 @@ class object
           void    bin_cache_init() noexcept;
           bool    bin_cache_acquire(long int) noexcept;
           char*   bin_cache_read(long int, std::size_t) noexcept;
+          bool    bin_cache_copy(std::uint8_t*, long int, std::size_t) noexcept;
           void    bin_cache_free() noexcept;
 
   public:
@@ -195,9 +208,11 @@ class object
           ~object();
           void    assign(const object&) noexcept;
           bool    load(sys::ios*, long int = 0) noexcept;
-          shdr    get_shdr() noexcept;
+          phdr    get_program_header() noexcept;
+          shdr    get_section_header() noexcept;
           strtab  get_strtab() noexcept;
           symtab  get_symtab() noexcept;
+          bool    copy(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept;
           bool    reset() noexcept;
           void    release() noexcept;
           bool    is_class(unsigned int) const noexcept;

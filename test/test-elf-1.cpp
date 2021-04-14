@@ -3,14 +3,17 @@
 #include <io.h>
 #include <uld/object.h>
 #include <uld/elf32.h>
+#include <uld/target/boot.h>
+#include <uld/target/memory.h>
 
 bool  test_elf_01() noexcept
 {
-      uld::target        l_target;
+      uld::boot          l_boot;
       uld::elf32::loader l_loader;
-      if(l_loader.load("blink.elf", l_target, 0)) {
+      if(l_loader.load("blink.elf", l_boot, 0)) {
+          return true;
       }
-      return true;
+      return false;
 }
 
 int   main(int, char**)

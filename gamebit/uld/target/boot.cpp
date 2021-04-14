@@ -1,5 +1,3 @@
-#ifndef uld_elf_memory_h
-#define uld_elf_memory_h
 /** 
     Copyright (c) 2021, wicked systems
     All rights reserved.
@@ -21,19 +19,46 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-#include "runtime.h"
-#include <memory.h>
-#include <memory/bank.h>
+#include "boot.h"
+#include "hardware/regs/addressmap.h"
+#include "pico/binary_info/defs.h"
 
 namespace uld {
 
-class segment_table_t
-{
-};
+/* rom_size
+   Raspberry Pico flash size, 2MB
+*/
+      constexpr std::size_t rom_size = 2 * 1024 * 1024;
 
-class symbol_table_t
+      boot::boot()
 {
-};
+}
+
+      boot::~boot()
+{
+}
+
+rtl_address_t boot::map(std::uint8_t, std::uint32_t addr, std::uint32_t size, std::uint32_t) noexcept
+{
+      rtl_address_t l_result;
+      l_result.base = rsa_base_undef;
+      l_result.data = nullptr;
+      if(addr) {
+          if((addr >= XIP_MAIN_BASE) &&
+              (addr + size <= XIP_MAIN_BASE + rom_size)) {
+              l_result.base = addr;
+              l_result.data = reinterpret_cast<std::uint8_t*>(addr + (XIP_SRAM_BASE - XIP_MAIN_BASE));
+          }
+      }
+      return l_result;
+}
+
+rtl_address_t boot::unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept
+{
+      rtl_address_t l_result;
+      l_result.base = rsa_base_undef;
+      l_result.data = nullptr;
+      return l_result;
+}
 
 /*namespace uld*/ }
-#endif
