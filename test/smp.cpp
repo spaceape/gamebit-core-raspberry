@@ -21,7 +21,7 @@
 **/
 #include "smp.h"
 #include <elf.h>
-#include <io.h>
+#include <gamebit.h>
 
       smp::smp() noexcept:
       uld::elf32::linker()
@@ -34,7 +34,7 @@
 
 bool  smp::load(const char* name, unsigned int) noexcept
 {
-      sys::fio l_file = io::open(name, O_RDONLY);
+      sys::fio l_file = gamebit::open(name, O_RDONLY);
       if(l_file) {
           uld::object l_object(l_file);
           if(l_object) {

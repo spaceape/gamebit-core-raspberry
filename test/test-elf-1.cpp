@@ -1,10 +1,9 @@
 #include <stdio.h>
-#include <com.h>
-#include <io.h>
 #include <uld/object.h>
 #include <uld/elf32.h>
 #include <uld/target/boot.h>
 #include <uld/target/memory.h>
+#include <gamebit.h>
 
 bool  test_elf_01() noexcept
 {
@@ -18,8 +17,8 @@ bool  test_elf_01() noexcept
 
 int   main(int, char**)
 {
-      com l_com;
-      io  l_filesystem;
+      gamebit::initialise();
       test_elf_01();
+      gamebit::dispose();
       return 0;
 }

@@ -10,18 +10,15 @@ configure_file(version.in.h ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 set(inc)
 
 set(srcs
-  com.cpp io.cpp
   post.cpp gamebit.cpp
 )
 
 add_subdirectory(uld)
 
 # static libraries exported for testing
-add_library(gbcom com.cpp)
-target_link_libraries(gbcom pico_stdlib)
-add_library(gbio io.cpp)
-target_link_libraries(gbio core)
+add_library(gbx ${srcs})
+target_link_libraries(gbx core uld)
 
 # main gamebit image
-add_executable(gamebit ${srcs})
-target_link_libraries(gamebit core pico_stdlib)
+add_executable(gamebit main.cpp ${srcs})
+target_link_libraries(gamebit core uld)

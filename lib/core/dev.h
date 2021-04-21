@@ -27,11 +27,36 @@
 */
 struct spi_inst;
 
+/* file open flags (fcntl.h approved)
+*/
+#ifndef _FCNTL_H
+constexpr long int O_RDONLY = 0;
+constexpr long int O_WRONLY = 1;
+constexpr long int O_RDWR = 2;
+constexpr long int O_ACCMODE = (O_RDONLY | O_WRONLY | O_RDWR);
+
+constexpr long int O_CREAT = 0x0100;
+constexpr long int O_TRUNC = 0x0200;
+constexpr long int O_EXCL = 0x0400;
+
+constexpr long int O_TEXT = 0x4000;
+constexpr long int O_BINARY = 0x8000;
+constexpr long int O_RAW = O_BINARY;
+#endif
+
+// #ifndef _LINUX_FS_H
+// constexpr int SEEK_SET = 0; /* seek relative to beginning of file */
+// constexpr int SEEK_CUR = 1; /* seek relative to current file position */
+// constexpr int SEEK_END = 2; /* seek relative to end of file */
+// #endif
+
 namespace dev {
 
 using  spi_inst_t = spi_inst;
 
 class  bd;
+class  drive;
+class  lcd;
 
 /*namespace dev*/ }
 #endif

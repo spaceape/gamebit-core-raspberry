@@ -21,7 +21,7 @@
 **/
 #include "elf32.h"
 #include "object.h"
-#include <io.h>
+#include <gamebit.h>
 
 namespace uld {
 namespace elf32 {
@@ -110,7 +110,7 @@ bool  loader::elf_error(...) noexcept
 
 bool  loader::load(const char* file, target& target, unsigned int options) noexcept
 {
-      sys::fio l_file = io::open(file, O_RDONLY);
+      sys::fio l_file = gamebit::open(file, O_RDONLY);
       if(l_file) {
           object l_object(l_file);
           if(l_object) {

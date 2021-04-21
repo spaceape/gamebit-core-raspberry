@@ -1,5 +1,5 @@
-#ifndef config_h
-#define config_h
+#ifndef gamebit_config_h
+#define gamebit_config_h
 /** 
     Copyright (c) 2021, wicked systems
     All rights reserved.

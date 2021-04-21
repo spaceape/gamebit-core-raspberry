@@ -33,10 +33,10 @@ namespace sys {
 {
 }
 
-      fio::fio(sys::drive* drive, const char* name, long int mode, long int permissions) noexcept:
+      fio::fio(dev::drive* drive, const char* name, long int mode, long int permissions) noexcept:
       fio()
 {
-      sys::index l_index;
+      dev::index l_index;
       if(drive) {
           l_index = drive->get_index(name, mode, permissions);
           if(l_index.m_address) {

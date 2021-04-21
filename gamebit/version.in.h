@@ -1,5 +1,5 @@
-#ifndef version_h
-#define version_h
+#ifndef gamebit_version_h
+#define gamebit_version_h
 /** 
     Copyright (c) 2021, wicked systems
     All rights reserved.

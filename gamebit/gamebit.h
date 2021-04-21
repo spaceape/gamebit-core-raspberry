@@ -22,22 +22,35 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include <global.h>
-#include "io.h"
+#include <dev.h>
+#include <sys.h>
+#include <sys/ios/fio.h>
 
 static dev::bd*     sd0;
 static dev::bd*     sd1;
-static sys::drive*  part0;
-static sys::drive*  part1;
-static sys::drive*  part2;
-static sys::drive*  cache;
+static dev::drive*  part0;
+static dev::drive*  part1;
+static dev::drive*  part2;
+static dev::drive*  cache;
 
 static void*        display;
 static void*        console;
 
-bool   gamebit_initialise(unsigned int) noexcept;
-// sys::drive& get_default_disk() noexcept;
-// sys::drive& get_default_cache() noexcept;
-// void*       get_default_display() noexcept;
-bool   gamebit_dispose(unsigned int) noexcept;
-bool   gamebit_init_all() noexcept;
+/* if_*
+   initialisation flags
+*/
+static constexpr unsigned int if_stdio = 1;
+static constexpr unsigned int if_filesystem = 16;
+static constexpr unsigned int if_all = 0xffffffff;
+
+namespace gamebit {
+
+bool  initialise(unsigned int = if_all) noexcept;
+sys::fio     open(const char*, long int = O_RDONLY, long int = 0777) noexcept;
+sys::fio     close(sys::fio&) noexcept;
+dev::drive*  get_default_disk() noexcept;
+dev::drive*  get_default_cache() noexcept;
+bool  dispose(unsigned int = if_all) noexcept;
+
+/*namespace gamebit*/ }
 #endif

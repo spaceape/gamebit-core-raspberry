@@ -5,9 +5,9 @@
 #include <hardware/gpio.h>
 #include <hardware/spi.h>
 #include <dev.h>
-#include <dev/spio.h>
-#include <sys/raw/drive.h>
-#include <sys/fat/part.h>
+#include <dev/bd/spio.h>
+#include <dev/bd/drive.h>
+#include <dev/bd/fat/part.h>
 #include <sys/ios/fio.h>
 #include <utility>
 
@@ -17,7 +17,7 @@ bool  test_fat_01()
       dev::spio l_sda(spi1, 4000000);
 
       // open the first partition on the device
-      sys::fat::part l_part0(std::addressof(l_sda), 0);
+      dev::fat::part l_part0(std::addressof(l_sda), 0);
 
       // open a file on the partition
       sys::fio l_file(std::addressof(l_part0), "dummy.txt", O_RDWR, 0777);

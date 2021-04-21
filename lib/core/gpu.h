@@ -23,4 +23,14 @@
 **/
 #include "os.h"
 #include "gpu/none.h"
+
+#define  GPU_DRIVER_ILI9341S 2
+#define  GPU_DRIVER_ILI9341P 3
+#define  GPU_DRIVER_ILI9341  ((GPU_DRIVER == GPU_DRIVER_ILI9341S) || (GPU_DRIVER == GPU_DRIVER_ILI9341P))
+
+// stanard 8x8 font
+#define  GPU_FONT_STD8 8
+
+// stanard 256 colours 16 bit palette
+#define  GPU_PAL_STD256X16 8
 #endif

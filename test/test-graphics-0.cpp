@@ -1,15 +1,16 @@
 #include <stdio.h>
+#include "hardware.h"
 #include <pico/stdlib.h>
 #include "lcd-config.h"
 #include "lcd-setup.h"
 #include <utility>
 
-static constexpr unsigned int bit_cs   = 1 << TFT_CS;
-static constexpr unsigned int bit_dc   = 1 << TFT_DC;
-static constexpr unsigned int bit_rd   = 1 << TFT_RD;
-static constexpr unsigned int bit_wr   = 1 << TFT_WR;
-static constexpr unsigned int bit_rst  = 1 << TFT_RST;
-static constexpr unsigned int bit_data = 0x0000ff00;
+static constexpr unsigned int bit_cs   = 1 << PIN_LCD_CS;
+static constexpr unsigned int bit_dc   = 1 << PIN_LCD_DC;
+static constexpr unsigned int bit_rd   = 1 << PIN_LCD_RD;
+static constexpr unsigned int bit_wr   = 1 << PIN_LCD_WR;
+static constexpr unsigned int bit_rst  = 1 << PIN_LCD_RST;
+static constexpr unsigned int bit_data = 255 << PIN_LCD_D0;
 
 static constexpr int g_screen_width = 320;
 static constexpr int g_screen_height = 240;

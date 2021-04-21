@@ -3,8 +3,6 @@
 #include <pico/stdlib.h>
 #include <pico/multicore.h>
 #include <pico/malloc.h>
-#include "lcd-config.h"
-#include "lcd-setup.h"
 #include <utility>
 
 /* test_graphics_2

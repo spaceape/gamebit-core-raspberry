@@ -21,56 +21,74 @@
 **/
 #include "gamebit.h"
 #include <stdio.h>
-#include <config.h>
-#include <version.h>
 #include "pico/stdlib.h"
 #include "pico/stdio.h"
+#include <hardware/gpio.h>
+#include <hardware/spi.h>
+#include <dev/bd.h>
+#include <dev/bd/spio.h>
+#include <dev/bd/drive.h>
+#include <dev/bd/fat/part.h>
+#include <config.h>
+#include <version.h>
 
-void  help() noexcept
-{
-}
+static unsigned int s_init;
 
-bool  gamebit_initialise(unsigned int) noexcept
+namespace gamebit {
+
+bool  initialise(unsigned int flags) noexcept
 {
+      unsigned int l_init = flags & (~s_init);
+      if(l_init & if_stdio) {
+          stdio_init_all();
+      }
+      if(l_init & if_filesystem) {
+          sd0 = new(std::nothrow) dev::spio(spi1);
+          if(sd0) {
+              part0 = new(std::nothrow) dev::fat::part(sd0, 0);
+              if(part0) {
+                  s_init |= if_filesystem;
+              }
+          }
+      }
       return true;
 }
 
-
-bool  gamebit_dispose(unsigned int) noexcept
+sys::fio open(const char* name, long int mode, long int permissions) noexcept
 {
+      return sys::fio(part0, name, mode, permissions);
+}
+
+sys::fio close(sys::fio&) noexcept
+{
+      return sys::fio();
+}
+
+dev::drive*  get_default_disk() noexcept
+{
+      return part0;
+}
+
+dev::drive*  get_default_cache() noexcept
+{
+      return cache;
+}
+
+bool  dispose(unsigned int flags) noexcept
+{
+      unsigned int l_free = flags & s_init;
+      if(l_free & if_filesystem) {
+          if(part0) {
+              delete part0;
+              part0 = nullptr;
+          }
+          if(sd0) {
+              delete sd0;
+              sd0  = nullptr;
+          }
+          s_init ^= if_filesystem;
+      }
       return true;
 }
 
-bool  gamebit_init_all() noexcept
-{
-      return gamebit_initialise(0xffffffff);
-}
-
-void  panic() noexcept
-{
-      // go, blinky!
-      // hard reset to go out of this routine
-      gpio_init(PICO_DEFAULT_LED_PIN);
-      gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
-      while(true) {
-          gpio_put(PICO_DEFAULT_LED_PIN, 1);
-          sleep_ms(250);
-          gpio_put(PICO_DEFAULT_LED_PIN, 0);
-          sleep_ms(250);
-      }
-}
-
-bool  post() noexcept;
-
-int   main(int, char**)
-{
-      stdio_init_all();
-      printf("gamebit v0.0.1\n");
-      if(post()) {
-          io  l_filesystem;
-      }
-      // normally not reached
-      printf("Bye.\n");
-      panic();
-      return 0;
-}
+/*namespace gamebit*/ }

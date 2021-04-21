@@ -23,7 +23,7 @@
 **/
 #include <sys.h>
 #include <sys/ios.h>
-#include <sys/raw/drive.h>
+#include <dev/bd/drive.h>
 
 /* fio
    file IO via the fs API
@@ -32,7 +32,7 @@ namespace sys {
 
 class fio: public ios
 {
-  drive*        m_drive;
+  dev::drive*   m_drive;
   long int      m_mode;
   std::uint32_t m_address;
   long int      m_offset;
@@ -44,7 +44,7 @@ class fio: public ios
 
   public:
           fio() noexcept;
-          fio(drive*, const char*, long int = O_RDWR, long int = 0777) noexcept;
+          fio(dev::drive*, const char*, long int = O_RDWR, long int = 0777) noexcept;
           fio(const fio&) noexcept;
           fio(fio&&) noexcept;
   virtual ~fio();

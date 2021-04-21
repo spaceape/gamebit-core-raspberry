@@ -13,16 +13,24 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(OS ${CMAKE_SYSTEM_NAME})
 set(VMAJOR "0")
 set(VMINOR "1")
+
 set(DPU none)
+
 set(FPU none)
-set(GPU none)
+
+# include only a few distinct graphics resources, to minimise memory occupancy
+# values for the driver, font and palette resources are identified in the gpu.h header
+# drivers are implemented in the /dev/lcd directory
+# fonts and palettes defined in the dev/lcd/gfx directories
+set(GPU gfx)
+set(GPU_DRIVER 2)
+set(GPU_FONT 8)     
+set(GPU_PALETTE 8)
+
 set(EXCEPTIONS OFF)
-set(LINUX 0)        # autodetected, always set to "0" here
-set(WINDOWS 0)      # autodetected, always set to "0" here
-set(INSTRUMENT 0)
-set(DEV 1)
-set(DEBUG 1)
-set(SDK 0)
+set(DEV ON)
+set(DEBUG ON)
+set(SDK OFF)
 set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
@@ -39,8 +47,10 @@ pico_sdk_init()
 add_definitions(-Wall -Wextra)
 
 if(NOT ${CMAKE_BUILD_TYPE} EQUAL "Release")
-    add_definitions(-Wno-unused-variable)
+  add_definitions(-Wno-unused-parameter)
 endif()
+
+add_definitions(-DCPU=${CPU} -DDPU=${DPU} -DGPU=${GPU} -DARCH=${ARCH})
 
 include_directories(
   ${PICO_SDK_PATH}

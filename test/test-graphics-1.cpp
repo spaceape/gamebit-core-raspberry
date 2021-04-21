@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include "hardware.h"
 #include <pico/stdlib.h>
 #include <pico/multicore.h>
 #include <pico/malloc.h>
@@ -13,13 +14,12 @@
    is a better idea than drawing each scan line in its own slot, because there is a small overhead
    to setup the display draw window (at least 700 or 800us to invoke caset(), raset() and memrw())
 */
-static constexpr unsigned int bit_cs   = 1 << TFT_CS;
-static constexpr unsigned int bit_dc   = 1 << TFT_DC;
-static constexpr unsigned int bit_rd   = 1 << TFT_RD;
-static constexpr unsigned int bit_wr   = 1 << TFT_WR;
-static constexpr unsigned int bit_rst  = 1 << TFT_RST;
-static constexpr unsigned int bit_dbg  = 1 << TFT_DBG;
-static constexpr unsigned int bit_data = 0x0000ff00;
+static constexpr unsigned int bit_cs   = 1 << PIN_LCD_CS;
+static constexpr unsigned int bit_dc   = 1 << PIN_LCD_DC;
+static constexpr unsigned int bit_rd   = 1 << PIN_LCD_RD;
+static constexpr unsigned int bit_wr   = 1 << PIN_LCD_WR;
+static constexpr unsigned int bit_rst  = 1 << PIN_LCD_RST;
+static constexpr unsigned int bit_data = 255 << PIN_LCD_D0;
 
 static constexpr int g_screen_width = 320;
 static constexpr int g_screen_height = 240;
@@ -99,7 +99,7 @@ void  tft_get(uint8_t& data, Args&... args) noexcept
       gpio_set_dir_in_masked(bit_data);
       rd_set_l();
       nop();
-      data = (gpio_get_all() & bit_data) >> 8;
+      data = (gpio_get_all() & bit_data) >> PIN_LCD_D0;
       rd_set_h();
       nop();
       gpio_set_dir_out_masked(bit_data);
@@ -114,7 +114,7 @@ template<typename... Args>
 inline void  tft_put(uint8_t data, Args&&... args) noexcept
 {
       wr_set_l();
-      gpio_set_mask(data << 8);
+      gpio_set_mask(data << PIN_LCD_D0);
       wr_set_h();
       gpio_clr_mask(bit_data);
       tft_put(std::forward<Args>(args)...);
@@ -253,11 +253,11 @@ void  tft_blt(uint16_t* image, size_t size) noexcept
           auto  l_last = image + size;
           while(l_iter < l_last) {
               gpio_clr_mask(bit_wr);
-              gpio_set_mask(*l_iter & 0xff00);
+              gpio_set_mask(((*l_iter & 0xff00) >> 8) << PIN_LCD_D0);
               gpio_set_mask(bit_wr);
               gpio_clr_mask(bit_data);
               gpio_clr_mask(bit_wr);
-              gpio_set_mask((*l_iter & 0x00ff) << 8);
+              gpio_set_mask((*l_iter & 0x00ff) << PIN_LCD_D0);
               gpio_set_mask(bit_wr);
               gpio_clr_mask(bit_data);
               ++l_iter;
@@ -299,7 +299,6 @@ void  tft_core1_boot() noexcept
 
       // process framebuffer
       while(true) {
-          gpio_set_mask(bit_dbg);
           l_mark_0 = get_absolute_time();
           tft_raset(l_line_ctr, l_line_ctr - 1);
           tft_blt(l_line_ptr, g_screen_width);
@@ -315,7 +314,6 @@ void  tft_core1_boot() noexcept
           }
           l_mark_1 = get_absolute_time();
           l_busy   = absolute_time_diff_us(l_mark_0, l_mark_1);
-          gpio_clr_mask(bit_dbg);
           if(l_busy < l_delay) {
               l_sleep = l_delay - l_busy;
               busy_wait_us_32(l_sleep);
@@ -369,13 +367,13 @@ bool  tft_dispose() noexcept
 
 void  initialise() noexcept
 {
-      gpio_init_mask(bit_cs | bit_rd | bit_wr | bit_dc | bit_rst | bit_dbg);
-      gpio_set_dir_out_masked(bit_cs | bit_rd | bit_wr | bit_dc | bit_rst | bit_dbg);
+      gpio_init_mask(bit_cs | bit_rd | bit_wr | bit_dc | bit_rst);
+      gpio_set_dir_out_masked(bit_cs | bit_rd | bit_wr | bit_dc | bit_rst);
       gpio_set_mask(bit_cs | bit_rd | bit_wr | bit_dc | bit_rst);
       gpio_init_mask(bit_data);
-      tft_reset();
       gpio_set_dir_out_masked(bit_data);
-      // set_sys_clock_khz(125000, true);
+      set_sys_clock_khz(125000, true);
+      tft_reset();
       tft_swrst();
 }
 
@@ -436,12 +434,6 @@ int   main()
 {
       initialise();
       tft_initialise();
-      tft_get_info();
-      tft_get_status();
-      tft_get_power_mode();
-      tft_get_scanline();
-      tft_get_scanline();
-      tft_get_scanline();
 
       // bunch of graphics tests
       int l_test_id = 1;
