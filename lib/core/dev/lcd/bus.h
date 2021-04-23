@@ -26,7 +26,7 @@
 #include <hardware/gpio.h>
 #include <hardware/spi.h>
 
-static spi_inst_t* g_lcd_bus_spi;
+static dev::spi_inst_t*       g_lcd_bus_spi;
 
 static constexpr unsigned int bit_cs   =   1 << PIN_LCD_CS;
 static constexpr unsigned int bit_dc   =   1 << PIN_LCD_DC;

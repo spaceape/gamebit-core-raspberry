@@ -31,11 +31,11 @@ class target
   public:
           target() noexcept;
   virtual ~target();
-  virtual bool          reserve(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept;
-  virtual rtl_address_t map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept = 0;
-  virtual rtl_address_t unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept = 0;
-  virtual bool          dispose(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept;
-  virtual void          reset() noexcept;
+  virtual bool           reserve(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept;
+  virtual rtl_fragment_t map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept = 0;
+  virtual rtl_fragment_t unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept = 0;
+  virtual bool           dispose(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept;
+  virtual void           reset() noexcept;
 };
 
 /*namespace uld*/ }

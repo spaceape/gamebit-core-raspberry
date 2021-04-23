@@ -195,8 +195,6 @@ void  ili_set_partial_area(uint16_t sr, uint16_t er) noexcept
 
 namespace dev {
 
-static constexpr unsigned int ili_init_baud = 250000;
-
       ili9341::ili9341(int sx, int sy) noexcept:
       dc(),
       m_scene(sx, sy),
@@ -231,7 +229,7 @@ void  ili9341::bus_acquire() noexcept
           g_lcd_bus_spi = spi1;
       } else
           g_lcd_bus_spi = nullptr;
-      spi_init(g_lcd_bus_spi, ili_init_baud);
+      spi_init(g_lcd_bus_spi, spi_lcd_baud_auto);
       gpio_set_function(PIN_LCD_RX, GPIO_FUNC_SPI);
       gpio_set_function(PIN_LCD_TX, GPIO_FUNC_SPI);
       gpio_set_function(PIN_LCD_SCK, GPIO_FUNC_SPI);

@@ -58,9 +58,9 @@ class memory: public target
           memory(const memory&) noexcept = delete;
           memory(memory&&) noexcept = delete;
   virtual ~memory();
-  virtual rtl_address_t map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
-  virtual rtl_address_t unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
-  virtual void          reset() noexcept override;
+  virtual rtl_fragment_t  map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
+  virtual rtl_fragment_t  unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
+  virtual void            reset() noexcept override;
           memory& operator=(const memory&) noexcept = delete;
           memory& operator=(memory&&) noexcept = delete;
 };

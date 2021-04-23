@@ -1,5 +1,5 @@
-#ifndef core_hardware_h
-#define core_hardware_h
+#ifndef hardware_h
+#define hardware_h
 /** 
     Copyright (c) 2021, wicked systems
     All rights reserved.
@@ -28,7 +28,7 @@
 #define PIN_SDC_RX  8
 #define PIN_SDC_TX  11
 #define PIN_SDC_SCK 10
-#define PIN_SDC_LED 25   // SD Card activity LED: 0 
+#define PIN_SDC_LED PICO_DEFAULT_LED_PIN   // SD Card activity LED (0 - disable)
 
 // LCD pins (SPI0)
 #define PIN_LCD_CS  5

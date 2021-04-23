@@ -20,20 +20,11 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "spio.h"
+#include <hardware.h>
 #include <hardware/gpio.h>
 #include <hardware/spi.h>
 
 namespace dev {
-
-static constexpr unsigned int spio0_pin_cs  = 5;
-static constexpr unsigned int spio0_pin_rx  = 4;
-static constexpr unsigned int spio0_pin_tx  = 3;
-static constexpr unsigned int spio0_pin_sck = 2;
-
-static constexpr unsigned int spio1_pin_cs  = 13;
-static constexpr unsigned int spio1_pin_rx  = 12;
-static constexpr unsigned int spio1_pin_tx  = 11;
-static constexpr unsigned int spio1_pin_sck = 10;
 
 // SD initialises at a lower rate, specify what that is
 static constexpr unsigned int spio_init_baud   = 250000;
@@ -47,7 +38,7 @@ static constexpr unsigned int spio_throttle_us = 128;
 static constexpr bool         spio_use_crc = false;
 static constexpr bool         spio_use_dma = false;
 
-      spio::spio(spi_inst_t* spi, unsigned int baud) noexcept:
+      spio::spio(unsigned int baud) noexcept:
       bd(),
       m_spi(nullptr),
       m_type(0),
@@ -56,27 +47,27 @@ static constexpr bool         spio_use_dma = false;
       m_status(-1),
       m_ready(false)
 {
-      if(spi == spi0) {
+      if((PIN_SDC_TX == 3) ||
+          (PIN_SDC_TX == 7) ||
+          (PIN_SDC_TX == 19)) {
           spi_init(spi0, spio_init_baud);
-          gpio_init(spio0_pin_cs);
-          gpio_set_dir(spio0_pin_cs, GPIO_OUT);
-          gpio_put(spio0_pin_cs, 1);
-          gpio_set_function(spio0_pin_rx, GPIO_FUNC_SPI);
-          gpio_set_function(spio0_pin_tx, GPIO_FUNC_SPI);
-          gpio_set_function(spio0_pin_sck, GPIO_FUNC_SPI);
           m_spi = spi0;
-          m_pin_cs = spio0_pin_cs;
       } else
-      if(spi == spi1) {
+      if((PIN_SDC_TX == 11) ||
+          (PIN_SDC_TX == 15)) {
           spi_init(spi1, spio_init_baud);
-          gpio_init(spio1_pin_cs);
-          gpio_set_dir(spio1_pin_cs, GPIO_OUT);
-          gpio_put(spio1_pin_cs, 1);
-          gpio_set_function(spio1_pin_rx, GPIO_FUNC_SPI);
-          gpio_set_function(spio1_pin_tx, GPIO_FUNC_SPI);
-          gpio_set_function(spio1_pin_sck, GPIO_FUNC_SPI);
           m_spi = spi1;
-          m_pin_cs = spio1_pin_cs;
+      }
+      gpio_init(PIN_SDC_CS);
+      gpio_set_dir(PIN_SDC_CS, GPIO_OUT);
+      gpio_put(PIN_SDC_CS, 1);
+      gpio_set_function(PIN_SDC_RX, GPIO_FUNC_SPI);
+      gpio_set_function(PIN_SDC_TX, GPIO_FUNC_SPI);
+      gpio_set_function(PIN_SDC_SCK, GPIO_FUNC_SPI);
+      if(PIN_SDC_LED) {
+          gpio_init(PIN_SDC_LED);
+          gpio_set_dir(PIN_SDC_LED, GPIO_OUT);
+          gpio_put(PIN_SDC_LED, 0);
       }
       resume(baud);
 }
@@ -91,12 +82,18 @@ static constexpr bool         spio_use_dma = false;
 
 void  spio::bus_select() const noexcept
 {
-      gpio_put(m_pin_cs, 0);
+      gpio_put(PIN_SDC_CS, 0);
+      if(PIN_SDC_LED) {
+          gpio_put(PIN_SDC_LED, 1);
+      }
 }
 
 void  spio::bus_deselect() const noexcept
 {
-      gpio_put(m_pin_cs, 1);
+      if(PIN_SDC_LED) {
+          gpio_put(PIN_SDC_LED, 0);
+      }
+      gpio_put(PIN_SDC_CS, 1);
 }
 
 /* bus_hold()
@@ -251,6 +248,7 @@ bool  spio::dev_reset() const noexcept
               return true;
           }
           // send "stop transfer" token
+          // ...
           l_try++;
       }
       return false;
@@ -259,7 +257,6 @@ bool  spio::dev_reset() const noexcept
 bool  spio::resume(unsigned int baud) noexcept
 {
       if(m_ready == false) {
-          spi_set_baudrate(m_spi, spio_init_baud);
           busy_wait_us(2048);
           bus_hold();
           busy_wait_us(6144);

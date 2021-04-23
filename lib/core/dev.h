@@ -58,5 +58,11 @@ class  bd;
 class  drive;
 class  lcd;
 
+// SD Card config
+constexpr unsigned int spi_sdc_baud_auto = 1000000;
+
+// LCD config
+constexpr unsigned int spi_lcd_baud_auto = 1000000;
+
 /*namespace dev*/ }
 #endif

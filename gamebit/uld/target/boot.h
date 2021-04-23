@@ -32,13 +32,16 @@ namespace uld {
 */
 class boot: public target
 {
+  std::uint32_t    m_entry_point;
+  std::uint32_t    m_xipctl_save;
   public:
           boot();
           boot(const boot&) noexcept = delete;
           boot(boot&&) noexcept = delete;
   virtual ~boot();
-  virtual rtl_address_t map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
-  virtual rtl_address_t unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
+  virtual rtl_fragment_t map(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
+  virtual rtl_fragment_t unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept override;
+          void  exec() noexcept;
           boot& operator=(const boot&) noexcept = delete;
           boot& operator=(boot&&) noexcept = delete;
 };

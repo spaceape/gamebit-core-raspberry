@@ -34,7 +34,6 @@ namespace dev {
 class spio: public bd
 {
   spi_inst_t*   m_spi;
-  std::uint8_t  m_pin_cs;
   bool          m_type:2;
   bool          m_sdhc:1;
   bool          m_sdxc:1;
@@ -74,11 +73,11 @@ class spio: public bd
           bool  dev_reset() const noexcept;
 
   public:
-          spio(spi_inst_t*, unsigned int = 1000000u) noexcept;
+          spio(unsigned int = spi_sdc_baud_auto) noexcept;
           spio(const spio&) noexcept = delete;
           spio(spio&&) noexcept = delete;
   virtual ~spio();
-          bool  resume(unsigned int = 1000000u) noexcept;
+          bool  resume(unsigned int = spi_sdc_baud_auto) noexcept;
   virtual bool  load(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept override;
   virtual bool  save(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept override;
   virtual int   get_status() const noexcept override;

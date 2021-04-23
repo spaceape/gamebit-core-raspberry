@@ -14,7 +14,7 @@
 bool  test_fat_01()
 {
       // create SD device
-      dev::spio l_sda(spi1, 4000000);
+      dev::spio l_sda(4000000);
 
       // open the first partition on the device
       dev::fat::part l_part0(std::addressof(l_sda), 0);

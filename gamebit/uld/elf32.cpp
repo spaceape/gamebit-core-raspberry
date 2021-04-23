@@ -64,38 +64,48 @@ bool  linker::elf_error(...) noexcept
 bool  loader::elf_import(object& source, target& target, unsigned int) noexcept
 {
       auto l_shdr = source.get_section_header();
-      for(int l_sh_index = 0; l_sh_index < l_shdr.get_count(); l_sh_index++) {
+      int  l_scnt = l_shdr.get_count();
+      for(int l_sh_index = 0; l_sh_index < l_scnt; l_sh_index++) {
           auto l_sh_ptr = l_shdr.get_ptr(l_sh_index);
           if(l_sh_ptr) {
               auto l_sh_type = l_sh_ptr->sh_type;
               auto l_sh_flags = l_sh_ptr->sh_flags;
               if(l_sh_type == SHT_PROGBITS) {
+                  if(l_sh_flags & SHF_INFO_LINK) {
+                      return elf_error(255, "Relocation not supported for section %d", l_sh_index);
+                  }
                   if(l_sh_flags & SHF_ALLOC) {
-                      rtl_address_t l_fragment;
+                      rtl_fragment_t l_fragment;
                       if(l_sh_flags & SHF_WRITE) {
                           l_fragment = target.map(rsa_mode_rwa, l_sh_ptr->sh_addr, l_sh_ptr->sh_size, l_sh_ptr->sh_addralign);
                           if(l_fragment.base != rsa_base_undef) {
-                              source.copy(l_fragment.data, l_sh_ptr->sh_offset, l_sh_ptr->sh_size);
-                          } else
-                              return elf_error(255, "Invalid mapping for section %d", l_sh_index);
+                              if(l_fragment.action & rsa_act_keep) {
+                                  source.copy(l_fragment.data, l_sh_ptr->sh_offset, l_sh_ptr->sh_size);
+                              }
+                          }
                       } else
                       if(l_sh_flags & SHF_EXECINSTR) {
                           l_fragment = target.map(rsa_mode_rxa, l_sh_ptr->sh_addr, l_sh_ptr->sh_size, l_sh_ptr->sh_addralign);
                           if(l_fragment.base != rsa_base_undef) {
-                              source.copy(l_fragment.data, l_sh_ptr->sh_offset, l_sh_ptr->sh_size);
-                          } else
-                              return elf_error(255, "Invalid mapping for section %d", l_sh_index);
+                              if(l_fragment.action & rsa_act_keep) {
+                                  source.copy(l_fragment.data, l_sh_ptr->sh_offset, l_sh_ptr->sh_size);
+                              }
+                          }
                       } else
-                          return elf_error(255, "Invalid allocation for section %d", l_sh_index);
-                  }
-                  if(l_sh_flags & SHF_INFO_LINK) {
-                      return elf_error(255, "Relocation not supported for section %d", l_sh_index);
+                      if(l_sh_flags < SHF_MERGE) {
+                          l_fragment = target.map(rsa_mode_ra, l_sh_ptr->sh_addr, l_sh_ptr->sh_size, l_sh_ptr->sh_addralign);
+                          if(l_fragment.base != rsa_base_undef) {
+                              if(l_fragment.action & rsa_act_keep) {
+                                  source.copy(l_fragment.data, l_sh_ptr->sh_offset, l_sh_ptr->sh_size);
+                              }
+                          }
+                      }
                   }
               }
           } else
               return elf_error(255, "I/O error");
       }
-      return false;
+      return true;
 }
 
 bool  loader::elf_discard() noexcept

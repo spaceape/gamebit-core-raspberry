@@ -39,6 +39,7 @@ constexpr std::uint8_t   rsa_mode_w = 32;
 constexpr std::uint8_t   rsa_mode_x = 64;
 constexpr std::uint8_t   rsa_mode_a = 128;      // allocate
 constexpr std::uint8_t   rsa_mode_rw = rsa_mode_r | rsa_mode_w;
+constexpr std::uint8_t   rsa_mode_ra = rsa_mode_r | rsa_mode_a;
 constexpr std::uint8_t   rsa_mode_rwa = rsa_mode_rw | rsa_mode_a;
 constexpr std::uint8_t   rsa_mode_rx = rsa_mode_r | rsa_mode_x;
 constexpr std::uint8_t   rsa_mode_rxa = rsa_mode_rx | rsa_mode_a;
@@ -54,6 +55,17 @@ struct rtl_address_t
 };
 
 constexpr std::uint32_t  rsa_base_undef = 0xffffffff;  // address undefined, signals an rtl_address_t allocation error
+
+/* rtl_fragment_t
+   result of a target allocation/mapping
+*/
+constexpr std::uint8_t    rsa_act_none = 0;
+constexpr std::uint8_t    rsa_act_keep = 1;
+
+struct rtl_fragment_t: public rtl_address_t
+{
+  std::uint8_t   action;
+};
 
 /* rsa_page_size
    page size for segment allocation; segment sizes in bytes will be an integer multiple of this value;

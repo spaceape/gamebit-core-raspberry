@@ -43,7 +43,7 @@ bool  initialise(unsigned int flags) noexcept
           stdio_init_all();
       }
       if(l_init & if_filesystem) {
-          sd0 = new(std::nothrow) dev::spio(spi1);
+          sd0 = new(std::nothrow) dev::spio();
           if(sd0) {
               part0 = new(std::nothrow) dev::fat::part(sd0, 0);
               if(part0) {

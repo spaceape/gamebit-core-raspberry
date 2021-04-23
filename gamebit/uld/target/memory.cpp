@@ -92,13 +92,13 @@ rtl_segment_t& memory::get_by_address(std::uint32_t) noexcept
       return get_undef();
 }
 
-rtl_address_t memory::map(std::uint8_t attr, std::uint32_t, std::uint32_t size, std::uint32_t align) noexcept
+rtl_fragment_t memory::map(std::uint8_t attr, std::uint32_t, std::uint32_t size, std::uint32_t align) noexcept
 {
-      rtl_address_t l_result;
-      int           i_segment     = m_upper_bound;
-      int           l_alloc_bytes = get_round_value(size, sizeof(void*));
-      std::uint32_t l_address;
-      std::uint8_t* l_pointer;
+      rtl_fragment_t l_result;
+      int            i_segment     = m_upper_bound;
+      int            l_alloc_bytes = get_round_value(size, sizeof(void*));
+      std::uint32_t  l_address;
+      std::uint8_t*  l_pointer;
   
       // go from upper down to lower bound and try to find a segment of similar attributes to allocate space from;
       // if not found, set the segment index to upper bound;
@@ -190,9 +190,9 @@ rtl_address_t memory::map(std::uint8_t attr, std::uint32_t, std::uint32_t size, 
       return l_result;
 }
 
-rtl_address_t memory::unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept
+rtl_fragment_t memory::unmap(std::uint8_t, std::uint32_t, std::uint32_t, std::uint32_t) noexcept
 {
-      rtl_address_t l_result;
+      rtl_fragment_t  l_result;
       l_result.base = rsa_base_undef;
       l_result.data = nullptr;
       return l_result;
