@@ -24,37 +24,41 @@
 #include "global.h"
 
 // SD Card pins (SPI1)
-#define PIN_SDC_CS  9
-#define PIN_SDC_RX  8
-#define PIN_SDC_TX  11
-#define PIN_SDC_SCK 10
-#define PIN_SDC_LED PICO_DEFAULT_LED_PIN   // SD Card activity LED (0 - disable)
+#define  PIN_SDC_CS  9
+#define  PIN_SDC_RX  8
+#define  PIN_SDC_TX  11
+#define  PIN_SDC_SCK 10
+#define  PIN_SDC_LED PICO_DEFAULT_LED_PIN   // SD Card activity LED (0 - disable)
 
 // LCD pins (SPI0)
-#define PIN_LCD_CS  5
-#define PIN_LCD_RX  4
-#define PIN_LCD_TX  7
-#define PIN_LCD_SCK 6
+#define  PIN_LCD_CS  5
+#define  PIN_LCD_RX  4
+#define  PIN_LCD_TX  7
+#define  PIN_LCD_SCK 6
 
 // LCD control pins
-// #define PIN_LCD_CS  27
-#define PIN_LCD_DC  26
-#define PIN_LCD_RD  20
-#define PIN_LCD_WR  21
+#define  PIN_LCD_DC  3
+#define  PIN_LCD_RD  20
+#define  PIN_LCD_WR  21
 
 // LCD data interface pins: should be a continuous range
-#define PIN_LCD_D0  12
-#define PIN_LCD_D1  13
-#define PIN_LCD_D2  14
-#define PIN_LCD_D3  15
-#define PIN_LCD_D4  16
-#define PIN_LCD_D5  17
-#define PIN_LCD_D6  18
-#define PIN_LCD_D7  19
+#define  PIN_LCD_D0  12
+#define  PIN_LCD_D1  13
+#define  PIN_LCD_D2  14
+#define  PIN_LCD_D3  15
+#define  PIN_LCD_D4  16
+#define  PIN_LCD_D5  17
+#define  PIN_LCD_D6  18
+#define  PIN_LCD_D7  19
 
 // LCD reset pin
-#define PIN_LCD_RST 22
+#define  PIN_LCD_RST 22
+
+// PWM audio pins: should be the same slice (which also implies "consecutive")
+#define  PIN_PWM_L   26
+#define  PIN_PWM_R   27
+#define  PIN_PWM_LF  0
 
 // debug pin
-#define PIN_DBG     LED_PIN
+#define PIN_DBG      22
 #endif

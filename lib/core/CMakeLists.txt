@@ -27,6 +27,9 @@ set(srcs
   dev/lcd/gfx/raster/pbo.cpp
   dev/lcd/gfx/surface.cpp dev/lcd/gfx/canvas.cpp dev/lcd/gfx/sprite.cpp dev/lcd/gfx/scene.cpp
 
+  dev/pwm/pwm.cpp
+  dev/pwm/osc.cpp
+
   sys/ios/ios.cpp sys/ios/rio.cpp sys/ios/sio.cpp sys/ios/bio.cpp sys/ios/pio.cpp sys/ios/fio.cpp
   sys/sys.cpp
 
@@ -46,4 +49,4 @@ add_subdirectory(dev)
 add_subdirectory(sys)
 
 add_library(core ${srcs})
-target_link_libraries(core pico_stdlib pico_multicore hardware_spi)
+target_link_libraries(core pico_stdlib pico_multicore hardware_pwm hardware_spi)

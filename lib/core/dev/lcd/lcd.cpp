@@ -49,4 +49,4 @@ lcd&  lcd::operator=(lcd&&) noexcept
       return *this;
 }
 
-/*namespace sys*/ }
+/*namespace dev*/ }

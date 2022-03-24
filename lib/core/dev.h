@@ -26,6 +26,7 @@
 /* Raspberry Pico hardware structs
 */
 struct spi_inst;
+struct repeating_timer;
 
 /* file open flags (fcntl.h approved)
 */
@@ -52,17 +53,22 @@ constexpr long int O_RAW = O_BINARY;
 
 namespace dev {
 
-using  spi_inst_t = spi_inst;
+using  spi_inst_t        = spi_inst;
+using  repeating_timer_t = repeating_timer;
 
 class  bd;
 class  drive;
 class  lcd;
 
 // SD Card config
-constexpr unsigned int spi_sdc_baud_auto = 1000000;
+constexpr unsigned int sdc_spi_baud_auto = 1000000u;
 
 // LCD config
-constexpr unsigned int spi_lcd_baud_auto = 1000000;
+constexpr unsigned int lcd_spi_baud_auto = 1000000u;
+
+// synth config
+constexpr int osc_cnt     = 4u;
+constexpr int osc_sync_us = 128u;
 
 /*namespace dev*/ }
 #endif

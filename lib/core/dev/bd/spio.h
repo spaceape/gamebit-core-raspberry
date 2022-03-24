@@ -73,11 +73,11 @@ class spio: public bd
           bool  dev_reset() const noexcept;
 
   public:
-          spio(unsigned int = spi_sdc_baud_auto) noexcept;
+          spio(unsigned int = sdc_spi_baud_auto) noexcept;
           spio(const spio&) noexcept = delete;
           spio(spio&&) noexcept = delete;
   virtual ~spio();
-          bool  resume(unsigned int = spi_sdc_baud_auto) noexcept;
+          bool  resume(unsigned int = sdc_spi_baud_auto) noexcept;
   virtual bool  load(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept override;
   virtual bool  save(std::uint8_t*, std::uint32_t, std::uint32_t) noexcept override;
   virtual int   get_status() const noexcept override;

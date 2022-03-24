@@ -21,8 +21,8 @@
 **/
 #include "gamebit.h"
 #include <stdio.h>
-#include "pico/stdlib.h"
-#include "pico/stdio.h"
+#include <pico/stdlib.h>
+#include <pico/stdio.h>
 #include <hardware/gpio.h>
 #include <hardware/spi.h>
 #include <dev/bd.h>
@@ -39,8 +39,15 @@ namespace gamebit {
 bool  initialise(unsigned int flags) noexcept
 {
       unsigned int l_init = flags & (~s_init);
-      if(l_init & if_stdio) {
+      if(l_init & if_power_hard) {
+          gpio_set_dir(23, GPIO_OUT);
+          gpio_put(23, 1);
+      } else
+      if(l_init & if_stdio_usb) {
           stdio_init_all();
+      } else
+      if(l_init & if_stdio_uart) {
+          stdio_uart_init();
       }
       if(l_init & if_filesystem) {
           sd0 = new(std::nothrow) dev::spio();

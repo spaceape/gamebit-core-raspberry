@@ -229,7 +229,7 @@ void  ili9341::bus_acquire() noexcept
           g_lcd_bus_spi = spi1;
       } else
           g_lcd_bus_spi = nullptr;
-      spi_init(g_lcd_bus_spi, spi_lcd_baud_auto);
+      spi_init(g_lcd_bus_spi, lcd_spi_baud_auto);
       gpio_set_function(PIN_LCD_RX, GPIO_FUNC_SPI);
       gpio_set_function(PIN_LCD_TX, GPIO_FUNC_SPI);
       gpio_set_function(PIN_LCD_SCK, GPIO_FUNC_SPI);

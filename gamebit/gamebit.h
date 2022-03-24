@@ -39,8 +39,10 @@ static void*        console;
 /* if_*
    initialisation flags
 */
-static constexpr unsigned int if_stdio = 1;
-static constexpr unsigned int if_filesystem = 16;
+static constexpr unsigned int if_power_hard = 1;
+static constexpr unsigned int if_stdio_uart = 16;
+static constexpr unsigned int if_stdio_usb = 32;
+static constexpr unsigned int if_filesystem = 64;
 static constexpr unsigned int if_all = 0xffffffff;
 
 namespace gamebit {

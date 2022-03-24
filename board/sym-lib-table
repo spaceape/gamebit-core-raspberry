@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name gb_1_0_pico-rescue)(type Legacy)(uri ${KIPRJMOD}/gb_1_0_pico-rescue.lib)(options "")(descr ""))
+  (lib (name MCU_RaspberryPi_and_Boards)(type Legacy)(uri ${KIPRJMOD}/components/MCU_RaspberryPi_and_Boards.lib)(options "")(descr ""))
+  (lib (name uSD_push-push_ebay)(type Legacy)(uri ${KIPRJMOD}/components/uSD_push-push_ebay.lib)(options "")(descr ""))
+  (lib (name audio)(type Legacy)(uri ${KIPRJMOD}/components/audio.lib)(options "")(descr ""))
+)
