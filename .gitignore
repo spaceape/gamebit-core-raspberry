@@ -1,4 +1,8 @@
 doc/*
 etc/vault
+test/elf-thumb-basic/*.s
+test/elf-thumb-gamebit/*.s
+test/elf-thumb-usr/*.s
 build
-
+*.o
+*.i
