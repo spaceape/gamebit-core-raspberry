@@ -5,15 +5,30 @@
 #include <stdlib.h>
 #include <gfx.h>
 #include <gfx/device.h>
-#include "gfx-surface.h"
+#include <gfx/surface.h>
 
-gfx_surface*  gfx_make_surface(std::uint8_t, unsigned int, unsigned int) noexcept;
-void          gfx_set_colour_count(gfx_surface*, int) noexcept;
-void          gfx_set_glyph_size(gfx_surface*, int, int) noexcept;
-void          gfx_map(gfx_surface*, int, int) noexcept;
-void          gfx_unmap(gfx_surface*) noexcept;
-void          gfx_free_surface(gfx_surface*) noexcept;
-void          gfx_get_display_sx() noexcept;
-void          gfx_get_display_sy() noexcept;
+gfx::surface* gfx_make_surface() noexcept;
+
+bool   gfx_map(gfx::surface*, int, int, int, int) noexcept;
+
+bool   gfx_set_format(gfx::surface*, unsigned int, int, int, int) noexcept;
+void   gfx_set_option_flags(gfx::surface*, unsigned int) noexcept;
+void   gfx_set_render_flags(gfx::surface*, unsigned int) noexcept;
+void   gfx_set_window_size(gfx::surface*, int, int) noexcept;
+
+std::uint8_t* gfx_get_lb_ptr(gfx::surface*) noexcept;
+std::uint8_t* gfx_get_hb_ptr(gfx::surface*) noexcept;
+std::uint8_t* gfx_get_xb0_ptr(gfx::surface*) noexcept;
+std::uint8_t* gfx_get_xb1_ptr(gfx::surface*) noexcept;
+
+void   gfx_scroll_rel(gfx::surface*, int, int) noexcept;
+void   gfx_scroll_abs(gfx::surface*, int, int) noexcept;
+
+bool   gfx_unmap(gfx::surface*) noexcept;
+
+void   gfx_free_surface(gfx::surface*) noexcept;
+
+void   gfx_get_display_sx() noexcept;
+void   gfx_get_display_sy() noexcept;
 
 #endif

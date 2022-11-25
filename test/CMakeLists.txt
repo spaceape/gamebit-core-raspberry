@@ -41,7 +41,8 @@ target_compile_definitions(
 
 add_executable(test-graphics-1
   share/sys.cpp
-  share/gfx.cpp share/gfx-surface.cpp
+  share/file.cpp
+  share/gfx.cpp
   test-graphics-1.cpp hw_config.c
 )
 target_link_libraries(test-graphics-1 fat uld blackops hardware_spi hardware_dma hardware_rtc pico_stdlib)
@@ -49,5 +50,5 @@ target_compile_definitions(
   test-graphics-1
   PRIVATE
       PICO_STACK_SIZE=4096
-      PICO_HEAP_SIZE=196608
+      PICO_HEAP_SIZE=65536
 )

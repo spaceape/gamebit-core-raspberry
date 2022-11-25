@@ -52,6 +52,7 @@ class cmo: public ac
             ~ref();
 
             unsigned int  get_format() const noexcept;
+            int           get_colour_count() const noexcept;
             
             void    reset() noexcept;
             bool    reset(unsigned int, int) noexcept;
@@ -59,7 +60,6 @@ class cmo: public ac
 
             std::uint8_t* get_data_ptr() const noexcept;
             std::uint8_t* get_data_at(int) const noexcept;
-            int           get_colour_count() const noexcept;
             int           get_data_size() const noexcept;
 
             ref&    operator=(const ref&) noexcept = delete;
@@ -131,6 +131,11 @@ class cmo: public ac
           cmo(cmo&&) noexcept;
           ~cmo();
 
+          unsigned int get_format() const noexcept;
+          bool   has_format(unsigned int) const noexcept;
+          int    get_colour_count() const noexcept;
+          bool   has_colour_count(int) const noexcept;
+          
           bool   reset(unsigned int, int) noexcept;
           bool   reset(unsigned int, int, std::uint8_t*, std::size_t) noexcept;
 
@@ -141,6 +146,10 @@ class cmo: public ac
           void   dispose() noexcept;
           void   release() noexcept;
 
+  inline  bool   operator==(cmo& rhs) const noexcept {
+          return m_ptr.get() == rhs.m_ptr.get();
+  }
+    
   inline  std::uint8_t* get_data_ptr() const noexcept {
           return m_ptr->get_data_ptr();
   }

@@ -91,9 +91,14 @@ namespace gfx {
       reset();
 }
 
-unsigned int cmo::ref::get_format() const noexcept
+auto  cmo::ref::get_format() const noexcept -> unsigned int
 {
       return m_format;
+}
+
+int   cmo::ref::get_colour_count() const noexcept
+{
+      return m_count;
 }
 
 void  cmo::ref::reset() noexcept
@@ -158,11 +163,6 @@ std::uint8_t* cmo::ref::get_data_at(int index) const noexcept
           return m_data + index * get_colour_size(m_format);
       }
       return nullptr;
-}
-
-int   cmo::ref::get_colour_count() const noexcept
-{
-      return m_count;
 }
 
 int   cmo::ref::get_data_size() const noexcept
@@ -309,6 +309,38 @@ int   cmo::get_colour_size(unsigned int format) noexcept
 int   cmo::get_palette_size(unsigned int format, int count) noexcept
 {
       return count * get_colour_size(format);
+}
+
+auto  cmo::get_format() const noexcept -> unsigned int
+{
+      if(m_ptr) {
+          return m_ptr->get_format();
+      }
+      return fmt_undef;
+}
+
+bool  cmo::has_format(unsigned int format) const noexcept
+{
+      if(m_ptr) {
+          return m_ptr->get_format() == format;
+      }
+      return format == fmt_undef;
+}
+
+int   cmo::get_colour_count() const noexcept
+{
+      if(m_ptr) {
+          return m_ptr->get_colour_count();
+      }
+      return 0;
+}
+
+bool  cmo::has_colour_count(int count) const noexcept
+{
+      if(m_ptr) {
+          return m_ptr->get_colour_count() == count;
+      }
+      return 0;
 }
 
 bool  cmo::reset(unsigned int format, int count) noexcept

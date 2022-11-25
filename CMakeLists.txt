@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.24)
+
+set(PICO_SDK_PATH "/opt/raspberry/pico-sdk")
+
+include(pico_sdk_import.cmake)
+
 project(blackops C CXX ASM)
 set(PROJECT "blackops")
 set(AUTHOR "")
@@ -13,14 +18,10 @@ set(CMAKE_GENERATOR "Unix Makefiles")
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
-set(PICO_SDK_PATH "/opt/raspberry/pico-sdk")
-
-# if(${CMAKE_BUILD_TYPE} EQUAL "Debug")
+if(${CMAKE_BUILD_TYPE} EQUAL "Debug")
   set(CMAKE_VERBOSE_MAKEFILE OFF)
   set(PICO_DEOPTIMIZED_DEBUG 1)
-# endif()
-
-include(pico_sdk_import.cmake)
+endif()
 
 if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")

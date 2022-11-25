@@ -33,11 +33,11 @@
 */
 class process: public gfx::surface
 {
-  uld::target*    m_target;
-  uld::image      m_image;
-  gfx::device*    m_display_ptr;
-  short int       m_display_sx;
-  short int       m_display_sy;
+  uld::target*  m_target;
+  uld::image    m_image;
+  gfx::device*  m_display_ptr;
+  short int     m_display_sx;
+  short int     m_display_sy;
 
   protected:
   virtual bool  gfx_prepare(gfx::device*) noexcept override;

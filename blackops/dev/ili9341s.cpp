@@ -25,6 +25,11 @@
 #include "display/cs8x8.h"
 #include <hardware.h>
 
+namespace gfx {
+extern   surface*            g_surface_ptr;
+extern   dc::mapping_base_t* g_mapping_ptr;
+/*namespace gfx*/ }
+
 namespace dev {
 
 // default SPI baud rate for this driver
@@ -182,7 +187,7 @@ void  ili9341s::dev_update() noexcept
 void  ili9341s::gfx_render() noexcept
 {
       if(auto
-          p_mapping =  static_cast<mapping_t*>(s_surface_mapping);
+          p_mapping =  static_cast<mapping_t*>(gfx::g_mapping_ptr);
           p_mapping != nullptr) {
           std::uint8_t  l_format       = p_mapping->format;
           std::uint16_t l_render_flags = p_mapping->render_flags;

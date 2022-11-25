@@ -21,12 +21,14 @@
 **/
 #include "dc.h"
 #include "config.h"
+#include "device.h"
+
+      gfx::device*        g_display_ptr;
 
 namespace gfx {
 
-      device*             dc::s_device;
-      surface*            dc::s_surface_ptr;
-      dc::mapping_base_t* dc::s_surface_mapping;
+      surface*            dc::gfx_surface_ptr;
+      dc::mapping_base_t* dc::gfx_mapping_ptr;
   
       dc::dc() noexcept
 {
@@ -41,19 +43,22 @@ namespace gfx {
 */
 bool  dc::gfx_set_format(unsigned int format, int colour_count, int tile_size_x, int tile_size_y) noexcept
 {
-      if((tile_size_x < glyph_sx_min) ||
-          (tile_size_x > glyph_sx_max)) {
-          return false;
+      if(gfx_mapping_ptr) {
+          if((tile_size_x < glyph_sx_min) ||
+              (tile_size_x > glyph_sx_max)) {
+              return false;
+          }
+          if((tile_size_y < glyph_sy_min) ||
+              (tile_size_y > glyph_sy_max)) {
+              return false;
+          }
+          gfx_mapping_ptr->format = format;
+          gfx_mapping_ptr->gsx = tile_size_x;
+          gfx_mapping_ptr->gsy = tile_size_y;
+          gfx_mapping_ptr->cc  = colour_count;
+          return true;
       }
-      if((tile_size_y < glyph_sy_min) ||
-          (tile_size_y > glyph_sy_max)) {
-          return false;
-      }
-      s_surface_mapping->format = format;
-      s_surface_mapping->gsx = tile_size_x;
-      s_surface_mapping->gsy = tile_size_y;
-      s_surface_mapping->cc  = colour_count;
-      return true;
+      return false;
 }
 
 /* gfx_set_option_flags()
@@ -61,7 +66,9 @@ bool  dc::gfx_set_format(unsigned int format, int colour_count, int tile_size_x,
 */
 void  dc::gfx_set_option_flags(unsigned int flags) noexcept
 {
-      s_surface_mapping->option_flags = flags;
+      if(gfx_mapping_ptr) {
+          gfx_mapping_ptr->option_flags = flags;
+      }
 }
 
 /* gfx_set_render_flags()
@@ -69,7 +76,9 @@ void  dc::gfx_set_option_flags(unsigned int flags) noexcept
 */
 void  dc::gfx_set_render_flags(unsigned int flags) noexcept
 {
-      s_surface_mapping->render_flags = flags;
+      if(gfx_mapping_ptr) {
+          gfx_mapping_ptr->render_flags = flags;
+      }
 }
 
 /* gfx_set_window_size()
@@ -77,87 +86,32 @@ void  dc::gfx_set_render_flags(unsigned int flags) noexcept
 */
 bool  dc::gfx_set_window_size(int sx, int sy) noexcept
 {
-      if((s_surface_mapping->wsx == 0) &&
-          (s_surface_mapping->wsy == 0)) {
-          if((sx < 0) ||
-              (sx > std::numeric_limits<short int>::max())) {
-              return false;
+      if(gfx_mapping_ptr) {
+          if((gfx_mapping_ptr->wsx == 0) &&
+              (gfx_mapping_ptr->wsy == 0)) {
+              if((sx < 0) ||
+                  (sx > std::numeric_limits<short int>::max())) {
+                  return false;
+              }
+              if((sy < 0) ||
+                  (sy > std::numeric_limits<short int>::max())) {
+                  return false;
+              }
+              gfx_mapping_ptr->wsx = sx;
+              gfx_mapping_ptr->wsy = sy;
+              gfx_mapping_ptr->wsa = false;
+              return true;
           }
-          if((sy < 0) ||
-              (sy > std::numeric_limits<short int>::max())) {
-              return false;
-          }
-          s_surface_mapping->wsx = sx;
-          s_surface_mapping->wsy = sy;
-          s_surface_mapping->wsa = false;
-          return true;
       }
       return false;
 }
-
-void  dc::gfx_scroll_rel(int dx, int dy) noexcept
-{
-      gfx_scroll_abs(s_surface_mapping->dx + dx, s_surface_mapping->dy + dy);
-}
-
-void  dc::gfx_scroll_abs(int dx, int dy) noexcept
-{
-      s_surface_mapping->dx = dx;
-      s_surface_mapping->dy = dy;
-}
-
-// /* gfx_cmo_reset()
-// */
-// void  dc::gfx_cmo_reset(unsigned int format, int colour_count) noexcept
-// {
-//       auto& l_cmo = s_surface_mapping->cm;
-//       l_cmo.reset(format, colour_count);
-// }
-
-// /* gfx_cmo_load()
-// */
-// bool  dc::gfx_cmo_load(int preset, unsigned int format) noexcept
-// {
-//       auto& l_cmo = s_surface_mapping->cm;
-//       return gfx_load_cmo_preset(l_cmo, preset, format);
-// }
-
-// /* gfx_cmo_load()
-// */
-// bool  dc::gfx_cmo_load(const char* file_name, unsigned int format, int colour_count) noexcept
-// {
-//       auto& l_cmo = s_surface_mapping->cm;
-//       return gfx_load_cmo(l_cmo, file_name, format, colour_count);
-// }
-
-// /* gfx_cso_reset()
-// */
-// void  dc::gfx_cso_reset(int index, unsigned int format, int sx, int sy) noexcept
-// {
-//       auto& l_cso = s_surface_mapping->cs[index];
-//       l_cso.reset(format, sx, sy);
-// }
-
-// /* gfx_cso_load()
-// */
-// bool  dc::gfx_cso_load(int index, const char* file_name, unsigned int format, int sx, int sy) noexcept
-// {
-//       auto& l_cso = s_surface_mapping->cs[index];
-//       return gfx_load_cso(l_cso, file_name, format, sx, sy);
-// }
-
-// bool  dc::gfx_cbo_resize(int sx, int sy) noexcept
-// {
-//       auto& l_cbo = s_surface_mapping->cb;
-//       return l_cbo.reset(s_surface_mapping->format, sx, sy);
-// }
 
 /* gfx_get_lb_ptr()
    get a pointer to the 'low byte' segment of the screen buffer (see gfx/tile.h)
 */
 uint8_t* dc::gfx_get_lb_ptr() noexcept
 {
-      return s_surface_mapping->cb.get_lb_ptr();
+      return g_display_ptr->get_lb_ptr(gfx_surface_ptr);
 }
 
 /* gfx_get_lb_ptr()
@@ -165,7 +119,7 @@ uint8_t* dc::gfx_get_lb_ptr() noexcept
 */
 uint8_t* dc::gfx_get_hb_ptr() noexcept
 {
-      return s_surface_mapping->cb.get_hb_ptr();
+      return g_display_ptr->get_hb_ptr(gfx_surface_ptr);
 }
 
 /* gfx_get_xb0_ptr()
@@ -173,7 +127,7 @@ uint8_t* dc::gfx_get_hb_ptr() noexcept
 */
 uint8_t* dc::gfx_get_xb0_ptr() noexcept
 {
-      return s_surface_mapping->cb.get_xb0_ptr();
+      return g_display_ptr->get_xb0_ptr(gfx_surface_ptr);
 }
 
 /* gfx_get_xb0_ptr()
@@ -181,40 +135,67 @@ uint8_t* dc::gfx_get_xb0_ptr() noexcept
 */
 uint8_t* dc::gfx_get_xb1_ptr() noexcept
 {
-      return s_surface_mapping->cb.get_xb1_ptr();
+      return g_display_ptr->get_xb1_ptr(gfx_surface_ptr);
 }
 
-/* gfx_save()
-   pack the current context variables to a `de` object
+void  dc::gfx_scroll_rel(int dx, int dy) noexcept
+{
+      return g_display_ptr->scroll_rel(gfx_surface_ptr, dx, dy);
+}
+
+void  dc::gfx_scroll_abs(int dx, int dy) noexcept
+{
+      return g_display_ptr->scroll_abs(gfx_surface_ptr, dx, dy);
+}
+
+/* gfx_push_device()
 */
-void  dc::gfx_save(de& ce, device* device) noexcept
+void  dc::gfx_push_device(device* device, de& restore_cb) noexcept
 {
       // store current context
-      ce.restore_device      = s_device;
-      ce.restore_cso_reserve = gfx_cso_reserve;
-      ce.restore_cso_dispose = gfx_cso_dispose;
-      ce.restore_cmo_reserve = gfx_cmo_reserve;
-      ce.restore_cmo_dispose = gfx_cmo_dispose;
-      ce.restore_cbo_reserve = gfx_cbo_reserve;
-      ce.restore_cbo_dispose = gfx_cbo_dispose;
-      ce.restore_pbo_reserve = gfx_pbo_reserve;
-      ce.restore_pbo_dispose = gfx_pbo_dispose;
+      restore_cb.device_ptr  = g_display_ptr;
+      restore_cb.cso_reserve = gfx_cso_reserve;
+      restore_cb.cso_dispose = gfx_cso_dispose;
+      restore_cb.cmo_reserve = gfx_cmo_reserve;
+      restore_cb.cmo_dispose = gfx_cmo_dispose;
+      restore_cb.cbo_reserve = gfx_cbo_reserve;
+      restore_cb.cbo_dispose = gfx_cbo_dispose;
+      restore_cb.pbo_reserve = gfx_pbo_reserve;
+      restore_cb.pbo_dispose = gfx_pbo_dispose;
 
       // apply new context
-      s_device = device;
+      g_display_ptr = device;
 }
 
-void  dc::gfx_restore(de& ce) noexcept
+void  dc::gfx_push_surface(surface* surface_ptr, surface*& restore_surface_ptr, mapping_base_t*& restore_mapping_ptr) noexcept
 {
-      s_device        = ce.restore_device;
-      gfx_cso_reserve = ce.restore_cso_reserve;
-      gfx_cso_dispose = ce.restore_cso_dispose;
-      gfx_cmo_reserve = ce.restore_cmo_reserve;
-      gfx_cmo_dispose = ce.restore_cmo_dispose;
-      gfx_cbo_reserve = ce.restore_cbo_reserve;
-      gfx_cbo_dispose = ce.restore_cbo_dispose;
-      gfx_pbo_reserve = ce.restore_pbo_reserve;
-      gfx_pbo_dispose = ce.restore_pbo_dispose;
+      restore_surface_ptr = gfx_surface_ptr;
+      restore_mapping_ptr = gfx_mapping_ptr;
+      gfx_surface_ptr = surface_ptr;
+      if(gfx_surface_ptr->m_mid) {
+          gfx_mapping_ptr = static_cast<mapping_base_t*>(surface_ptr->m_mid);
+      } else
+          gfx_mapping_ptr = nullptr;
 }
 
+void  dc::gfx_pop_surface(surface*& restore_surface_ptr, mapping_base_t*& restore_mapping_ptr) noexcept
+{
+      gfx_mapping_ptr = restore_mapping_ptr;
+      gfx_surface_ptr = restore_surface_ptr;
+}
+
+/* gfx_pop_device()
+*/
+void  dc::gfx_pop_device(de& restore_cb) noexcept
+{
+      g_display_ptr        = restore_cb.device_ptr;
+      gfx_cso_reserve = restore_cb.cso_reserve;
+      gfx_cso_dispose = restore_cb.cso_dispose;
+      gfx_cmo_reserve = restore_cb.cmo_reserve;
+      gfx_cmo_dispose = restore_cb.cmo_dispose;
+      gfx_cbo_reserve = restore_cb.cbo_reserve;
+      gfx_cbo_dispose = restore_cb.cbo_dispose;
+      gfx_pbo_reserve = restore_cb.pbo_reserve;
+      gfx_pbo_dispose = restore_cb.pbo_dispose;
+}
 /*namespace gfx*/ }

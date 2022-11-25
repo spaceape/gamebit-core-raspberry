@@ -35,11 +35,8 @@ namespace gfx {
 /* dc
    device context
 */
-class dc: public ac
+struct dc: public ac
 {
-  static  device*   s_device;
-  
-  protected:
   /* mapping_base_t
      surface mapping
   */
@@ -75,39 +72,31 @@ class dc: public ac
   };
 
   private:
-  /* de_t
+  /* de
      device environment: backup struct for context switches
   */
   struct de
   {
-      device* restore_device;
-
-      std::uint8_t*(*restore_cso_reserve)(int) noexcept;
-      std::uint8_t*(*restore_cso_dispose)(std::uint8_t*, int) noexcept;
-      std::uint8_t*(*restore_cmo_reserve)(int) noexcept;
-      std::uint8_t*(*restore_cmo_dispose)(std::uint8_t*, int) noexcept;
-      std::uint8_t*(*restore_cbo_reserve)(int) noexcept;
-      std::uint8_t*(*restore_cbo_dispose)(std::uint8_t*, int) noexcept;
-      std::uint8_t*(*restore_pbo_reserve)(int) noexcept;
-      std::uint8_t*(*restore_pbo_dispose)(std::uint8_t*, int) noexcept;
+      device* device_ptr;
+      std::uint8_t*(*cso_reserve)(int) noexcept;
+      std::uint8_t*(*cso_dispose)(std::uint8_t*, int) noexcept;
+      std::uint8_t*(*cmo_reserve)(int) noexcept;
+      std::uint8_t*(*cmo_dispose)(std::uint8_t*, int) noexcept;
+      std::uint8_t*(*cbo_reserve)(int) noexcept;
+      std::uint8_t*(*cbo_dispose)(std::uint8_t*, int) noexcept;
+      std::uint8_t*(*pbo_reserve)(int) noexcept;
+      std::uint8_t*(*pbo_dispose)(std::uint8_t*, int) noexcept;
   };
 
-  protected:
-  static  surface*        s_surface_ptr;
-  static  mapping_base_t* s_surface_mapping;
+  static  surface*        gfx_surface_ptr;
+  static  mapping_base_t* gfx_mapping_ptr;
 
   protected:
+
   static  bool      gfx_set_format(unsigned int, int, int, int) noexcept;
   static  void      gfx_set_option_flags(unsigned int) noexcept;
   static  void      gfx_set_render_flags(unsigned int) noexcept;
   static  bool      gfx_set_window_size(int, int) noexcept;
-
-  // static  void  gfx_cmo_reset(unsigned int, int) noexcept;
-  // static  bool  gfx_cmo_load(int, unsigned int) noexcept;
-  // static  bool  gfx_cmo_load(const char*, unsigned int, int) noexcept;
-  // static  void  gfx_cso_reset(int, unsigned int, int, int) noexcept;
-  // static  bool  gfx_cso_load(int, const char*, unsigned int, int, int) noexcept;
-  // static  bool  gfx_cbo_resize(int, int) noexcept;
 
   static  uint8_t*  gfx_get_lb_ptr() noexcept;
   static  uint8_t*  gfx_get_hb_ptr() noexcept;
@@ -117,10 +106,11 @@ class dc: public ac
   static  void      gfx_scroll_rel(int, int) noexcept;
   static  void      gfx_scroll_abs(int, int) noexcept;
 
-  static  void      gfx_save(de&, device*) noexcept;
-  static  void      gfx_restore(de&) noexcept;
+  static  void      gfx_push_device(device*, de&) noexcept;
+  static  void      gfx_push_surface(surface*, surface*&, mapping_base_t*&) noexcept;
+  static  void      gfx_pop_surface(surface*&, mapping_base_t*&) noexcept;
+  static  void      gfx_pop_device(de&) noexcept;
 
-  private:
   friend class  device;
   friend class  driver;
 

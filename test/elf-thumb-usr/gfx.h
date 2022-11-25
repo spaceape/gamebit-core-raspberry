@@ -48,7 +48,7 @@ static const uint8_t mode_indexed = fmt_indexed;
 static const uint8_t mode_indexed_8 = fmt_indexed;
 
 /* map_*
-    surface render flags
+   surface render flags
 */
 static const unsigned int  map_none = 0;       // no mapping, surface will not be rendered
 static const unsigned int  map_auto = 0;       // choose the default mapping (copy)
@@ -57,7 +57,7 @@ static const unsigned int  map_opaque = 2;
 static const unsigned int  map_volatile = 128;
 
 /* smp_*
-    surface option flags
+   surface option flags
 */
 static const unsigned int  opt_none = 0;
 static const unsigned int  opt_request_tile_graphics = 1;
@@ -66,27 +66,21 @@ static const unsigned int  opt_request_vector_graphics = 4;
 static const unsigned int  opt_opaque = 16;
 
 /* gfx_*
- * core graphics API
+   core graphics API
 */
-void*    gfx_make_surface(uint8_t, unsigned int, unsigned int) __attribute__((long_call));
-void     gfx_set_colour_count(void*, int) __attribute__((long_call));
-void     gfx_set_glyph_size(void*, int, int) __attribute__((long_call));
-void     gfx_map(void*, int, int) __attribute__((long_call));
-
-// bool     gfx_set_format(unsigned int, int, int, int) __attribute__((long_call));
-// void     gfx_set_option_flags(unsigned int) __attribute__((long_call));
-// void     gfx_set_render_flags(unsigned int) __attribute__((long_call));
-// bool     gfx_set_window_size(int, int) __attribute__((long_call));
-// 
-// uint8_t* gfx_get_lb_ptr() __attribute__((long_call));
-// uint8_t* gfx_get_hb_ptr() __attribute__((long_call));
-// uint8_t* gfx_get_xb0_ptr() __attribute__((long_call));
-// uint8_t* gfx_get_xb1_ptr() __attribute__((long_call));
-// 
-// void     gfx_scroll_rel(int, int) __attribute__((long_call));
-// void     gfx_scroll_abs(int, int) __attribute__((long_call));
-
-void     gfx_unmap(void*) __attribute__((long_call));
+void*    gfx_make_surface() __attribute__((long_call));
+bool     gfx_map(void*, int, int, int, int) __attribute__((long_call));
+bool     gfx_set_format(void*, unsigned int, int, int, int) __attribute__((long_call));
+void     gfx_set_option_flags(void*, unsigned int) __attribute__((long_call));
+void     gfx_set_render_flags(void*, unsigned int) __attribute__((long_call));
+void     gfx_set_window_size(void*, int, int) __attribute__((long_call));
+uint8_t* gfx_get_lb_ptr(void*) __attribute__((long_call));
+uint8_t* gfx_get_hb_ptr(void*) __attribute__((long_call));
+uint8_t* gfx_get_xb0_ptr(void*) __attribute__((long_call));
+uint8_t* gfx_get_xb1_ptr(void*) __attribute__((long_call));
+void     gfx_scroll_rel(void*, int, int) __attribute__((long_call));
+void     gfx_scroll_abs(void*, int, int) __attribute__((long_call));
+bool     gfx_unmap(void*) __attribute__((long_call));
 void     gfx_free_surface(void*) __attribute__((long_call));
 
 int      gfx_get_display_sx() __attribute__((long_call));

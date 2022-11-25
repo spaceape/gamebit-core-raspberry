@@ -20,9 +20,9 @@
     EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 #include "surface.h"
-// #include "tile/cbo.h"
-// #include "tile/cmo.h"
-// #include "tile/cso.h"
+#include "tile/cbo.h"
+#include "tile/cmo.h"
+#include "tile/cso.h"
 
 namespace gfx {
 

@@ -44,14 +44,19 @@ class device: public surface
   cso     m_dev_cso;      // default device charset object
 
   protected:
-          void   sdr_surface_push(surface*, surface*&, mapping_base_t*&) noexcept;
+          // void   sdr_surface_push(surface*, surface*&, mapping_base_t*&) noexcept;
           bool   sdr_surface_prepare(surface*, mapping_base_t*) noexcept;
           // void   sdr_surface_draw() noexcept;
-          void   sdr_surface_pop(surface*, surface*&, mapping_base_t*&) noexcept;
+          // void   sdr_surface_pop(surface*, surface*&, mapping_base_t*&) noexcept;
           bool   sdr_surface_release(surface*) noexcept;
 
           auto   sdr_make_mapping(surface*, int, int, int, int) noexcept -> mapping_t*;
-          bool   sdr_reset_mapping(surface*, mapping_t*, int, int, int, int) noexcept;
+          bool   sdr_reset_mapping(surface*, mapping_t*) noexcept;
+          bool   sdr_reset_format(surface*, mapping_t*, unsigned int, int, int, int) noexcept;
+          bool   sdr_reset_geometry(surface*, mapping_t*, int, int, int, int) noexcept;
+          void   sdr_reset_window_size(surface*, mapping_t*, int, int) noexcept;
+          void   sdr_reset_option_flags(surface*, mapping_t*, unsigned int) noexcept;
+          void   sdr_reset_render_flags(surface*, mapping_t*, unsigned int) noexcept;
           auto   sdr_free_mapping(surface*, mapping_t*) noexcept -> mapping_t*;
 
   virtual bool   gfx_attach_surface(surface*) noexcept override;
@@ -59,6 +64,7 @@ class device: public surface
   virtual bool   gfx_detach_surface(surface*) noexcept override;
   virtual void   gfx_sync(int) noexcept override;
 
+  friend class dc;
   public:
           device() noexcept;
           device(const device&) noexcept = delete;
@@ -66,14 +72,26 @@ class device: public surface
   virtual ~device();
 
           bool   map(surface*, int, int, int, int) noexcept;
+
           bool   remap(surface*, int, int, int, int) noexcept;
-  virtual bool   set_format(surface*, unsigned int) noexcept;
-  virtual bool   set_tile_options(surface*, int, int) noexcept;
-  virtual bool   set_raster_options(surface*, int, int) noexcept;
-  virtual bool   set_vector_options(surface*, int, int) noexcept;
+
+          bool   set_format(surface*, unsigned int, int, int, int) noexcept;
+          void   set_option_flags(surface*, unsigned int) noexcept;
+          void   set_render_flags(surface*, unsigned int) noexcept;
+          void   set_window_size(surface*, int, int) noexcept;
+
+          std::uint8_t* get_lb_ptr(surface*) const noexcept;
+          std::uint8_t* get_hb_ptr(surface*) const noexcept;
+          std::uint8_t* get_xb0_ptr(surface*) const noexcept;
+          std::uint8_t* get_xb1_ptr(surface*) const noexcept;
+
+          void   scroll_rel(surface*, int, int) noexcept;
+          void   scroll_abs(surface*, int, int) noexcept;
+
+          bool   unmap(surface*) noexcept;
+
   virtual int    get_display_sx() const noexcept = 0;
   virtual int    get_display_sy() const noexcept = 0;
-          bool   unmap(surface*) noexcept;
 
           device& operator=(const device&) noexcept = delete;
           device& operator=(device&&) noexcept = delete;

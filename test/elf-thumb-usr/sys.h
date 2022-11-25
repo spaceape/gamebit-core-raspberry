@@ -28,7 +28,19 @@ typedef _Bool bool;
 #define true 1;
 #define false 0;
 
-#define NULL (void*)0
+#define NULL ((void*)0)
+
+// <assert.h>	Diagnostics Functions
+// <ctype.h>	Character Handling Functions
+// <locale.h>	Localization Functions
+// <math.h>	Mathematics Functions
+// <setjmp.h>	Nonlocal Jump Functions
+// <signal.h>	Signal Handling Functions
+// <stdarg.h>	Variable Argument List Functions
+// <stdio.h>	Input/Output Functions
+// <stdlib.h>	General Utility Functions
+// <string.h>	String Functions
+// <time.h>	Date and Time Functions
 
 /* abort()
 */
@@ -47,16 +59,5 @@ int rand() __attribute__((long_call));
 void srand(unsigned int) __attribute__((long_call));
 
 
-// <assert.h>	Diagnostics Functions
-// <ctype.h>	Character Handling Functions
-// <locale.h>	Localization Functions
-// <math.h>	Mathematics Functions
-// <setjmp.h>	Nonlocal Jump Functions
-// <signal.h>	Signal Handling Functions
-// <stdarg.h>	Variable Argument List Functions
-// <stdio.h>	Input/Output Functions
-// <stdlib.h>	General Utility Functions
-// <string.h>	String Functions
-// <time.h>	Date and Time Functions
 
 #endif

@@ -6,14 +6,18 @@
 #include <memory>
 #include <vector>
 
-int   open(const char*, int) noexcept;
-// FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);			/* Read data from the file */
-// FRESULT f_write (FIL* fp, const void* buff, UINT btw, UINT* bw);	/* Write data to the file */
-// FRESULT f_lseek (FIL* fp, FSIZE_t ofs);								/* Move file pointer of the file object */
-// #define f_eof(fp) ((int)((fp)->fptr == (fp)->obj.objsize))
-// #define f_error(fp) ((fp)->err)
-// #define f_tell(fp) ((fp)->fptr)
-// #define f_size(fp) ((fp)->obj.objsize)
-// #define f_rewind(fp) f_lseek((fp), 0)
-int   close(int) noexcept;
+#ifndef _STDIO_H
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
 #endif
+
+int       open(const char*, int) noexcept;
+ssize_t   read(int, std::uint8_t*, std::size_t) noexcept;
+ssize_t   write(int, const std::uint8_t*, std::size_t) noexcept;
+off_t     seek(int, off_t, int) noexcept;
+off_t     tell(int) noexcept;
+bool      eof(int) noexcept;
+int       close(int) noexcept;
+#endif
+

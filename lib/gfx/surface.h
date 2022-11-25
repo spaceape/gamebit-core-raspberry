@@ -76,6 +76,7 @@ class surface: public dc
   virtual bool  gfx_release(device*) noexcept;
 
   friend class device;
+  friend class dc;
   public:
           surface(bool) noexcept;
           surface(surface*, bool) noexcept;
