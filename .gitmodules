@@ -1,3 +1,6 @@
 [submodule "lib/uld"]
 	path = lib/uld
 	url = git@github.com:spaceape/libuld.git
+[submodule "lib/gfx"]
+	path = lib/gfx
+	url = git@github.com:spaceape/libgfx.git
