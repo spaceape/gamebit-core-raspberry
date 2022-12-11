@@ -1,0 +1,3 @@
+[submodule "lib/uld"]
+	path = lib/uld
+	url = git@github.com:spaceape/libuld.git
