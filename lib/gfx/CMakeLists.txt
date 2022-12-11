@@ -43,7 +43,7 @@ set(srcs
   gfx.cpp
 )
 
-set(libs host ${HOST_LIBS})
+set(libs pico_stdlib host)
 
 add_subdirectory(assets)
 add_subdirectory(driver)

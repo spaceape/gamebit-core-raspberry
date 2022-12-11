@@ -29,13 +29,13 @@ set(srcs
   uld.cpp
 )
 
-set(libs ${HOST_LIBS})
+set(libs pico_stdlib host fat)
 
 add_subdirectory(bfd)
 
 add_library(${NAME} STATIC ${srcs})
 set_target_properties(${NAME} PROPERTIES PREFIX "${PREFIX}")
-target_link_libraries(${NAME} host fat pico_stdlib)
+target_link_libraries(${NAME} ${libs})
 
 if(SDK)
   file(MAKE_DIRECTORY ${ULD_SDK_DIR})

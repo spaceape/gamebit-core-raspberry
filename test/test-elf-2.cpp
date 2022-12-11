@@ -15,148 +15,167 @@
 #include "hw_config.h"
 #include <dbg.h>
 
-uint8_t   PatternTable[1024];
-uint8_t   NameTable[1024];
-uint8_t   AttrTable[1024];
-uint16_t  PaletteTable[1024];
+std::uint8_t  PatternTable[1024];
+std::uint8_t  NameTable[1024];
+std::uint8_t  AttrTable[1024];
+std::uint16_t PaletteTable[1024];
+std::uint8_t  Scratch[4096];
 
-typedef int(*init_call_type)();
-typedef void(*update_call_type)(std::uint32_t);
-typedef int(*dispose_call_type)();
+template<typename Rt, typename... Args>
+struct function
+{
+  using type = Rt(*)(Args...);
+};
 
-// void  dbg_dump_hex(void* bytes, int size) noexcept
-// {
-//       int  i_byte = 0;
-//       int  l_width = 16;
-//       char l_hex_cache[128];
-//       char l_ascii_cache[128];
-//       auto l_data_ptr = reinterpret_cast<std::uint8_t*>(bytes);
-//       while(i_byte < size) {
-//           int  i_column       = 0;
-//           int  l_data_offset  = i_byte;
-//           int  l_print_offset = 0;
-//           // print hex dump
-//           while(i_column < l_width) {
-//               l_ascii_cache[i_column] = '.';
-//               if(i_byte < size) {
-//                   l_print_offset += snprintf(l_hex_cache + l_print_offset, 4, "%.2x ",  *l_data_ptr);
-//                   if((*l_data_ptr > 32) &&
-//                       (*l_data_ptr < 128)) {
-//                       l_ascii_cache[i_column] = *l_data_ptr;
-//                   }
-//                   l_data_ptr++;
-//               } else
-//                   l_print_offset += snprintf(l_hex_cache + l_print_offset, 4, "   ");
-//               i_column++;
-//               i_byte++;
-//           }
-//           l_hex_cache[l_print_offset] = 0;
-//           l_ascii_cache[i_column] = 0;
-//           printf("    %.8x: %s %s\n", l_data_offset, l_hex_cache, l_ascii_cache);
-//       }
-// }
+template<typename Rt, typename... Args>
+function<Rt, Args...>::type get_function(uld::image& image, const char* name) noexcept
+{
+      if(uld::symbol_t*
+          l_symbol_ptr = image.find_symbol(name);
+          l_symbol_ptr != nullptr) {
+          if(l_symbol_ptr->ra != nullptr) {
+              return (typename function<Rt, Args...>::type)l_symbol_ptr->ra;
+          } else
+              printf("/!\\ FAILED: %s %d: Symbol `%s` is undefined\n", __FILE__, __LINE__, name);
+      } else
+          printf("/!\\ FAILED: %s %d: Symbol `%s` not found.\n", __FILE__, __LINE__, name);
+      return nullptr;
+}
+
+void gbPanic(uint32_t code, const char* message)
+{
+}
+
+uint32_t gbTime()
+{
+	return 0;
+}
+
+void gbRandomSeed(uint32_t seed)
+{ 
+}
+
+uint32_t gbRandom()
+{
+    return 0;
+}
+
+int gbAppInit()
+{
+    return 0;
+}
+
+void gbAppFree()
+{
+}
+
+bool gbAppRunning()
+{
+      return true;
+}
+
+void gbAppClose()
+{
+}
+
+void gbPatternData(uint8_t index, uint8_t count, const uint8_t* data)
+{
+}
+
+void gbDrawSprite(uint8_t id, uint8_t palette, int16_t x, int16_t y, uint32_t flags)
+{
+}
+
+void gbPaletteData(uint8_t id, uint8_t count, const uint32_t* colors)
+{
+}
+
+void gbDrawTileNames(const uint8_t* names, uint16_t countX, uint16_t countY)
+{
+}
+
+void gbDrawTileAttributes(const uint8_t* palettes, uint16_t countX, uint16_t countY)
+{
+}
+
+void gbDrawChar(int16_t x, int16_t y, uint8_t palette, char c) {
+}
+
+void gbDrawText(int16_t x, int16_t y, uint8_t palette, const char* format, ...)
+{
+}
+
+void gbDrawText2(int16_t x, int16_t y, uint8_t palette, const uint8_t* text)
+{
+}
+
+bool gbGetButtonState(uint8_t button)
+{
+     return false;
+}
+
+bool gbGetButtonDelta(uint8_t button)
+{
+     return false;
+}
 
 void  boot(const char* game) noexcept
 {
-    sd_card_t*  pSD = sd_get_by_num(0);
-    FRESULT     fr  = f_mount(&pSD->fatfs, pSD->pcName, 1);
-    if(fr == FR_OK) {
-        uld::target l_target(EM_ARM, ELFCLASS32, true, true);
-        uld::image  l_image(std::addressof(l_target));
-        printf("--- PatternTable: %p\n", std::addressof(PatternTable[0]));
-        l_image.make_symbol("PatternTable", uld::symbol_t::type_object, uld::symbol_t::bind_global, PatternTable);
-        printf("--- NameTable: %p\n", std::addressof(NameTable[0]));
-        l_image.make_symbol("NameTable", uld::symbol_t::type_object, uld::symbol_t::bind_global, NameTable);
-        printf("--- AddrTable: %p\n", std::addressof(AttrTable[0]));
-        l_image.make_symbol("AttrTable", uld::symbol_t::type_object, uld::symbol_t::bind_global, AttrTable);
-        printf("--- PaletteTable: %p\n", std::addressof(PaletteTable[0]));
-        l_image.make_symbol("PalletteTable", uld::symbol_t::type_object, uld::symbol_t::bind_global, PaletteTable);
-        if(l_image.load(game)) {
-            int               l_rc;
-            init_call_type    p_init_call = nullptr;
-            update_call_type  p_update_call = nullptr;
-            dispose_call_type p_dispose_call = nullptr;
+      uld::target    target(EM_ARM, ELFCLASS32, true, true);
+      uld::image     image(std::addressof(target));
 
-            if(uld::symbol_t*
-                l_data_ptr = l_image.find_symbol("Patterns");
-                l_data_ptr != nullptr) {
-                printf("%s: %p\n", l_data_ptr->name, l_data_ptr->ea);
-            }
-            if(uld::symbol_t*
-                l_data_ptr = l_image.find_symbol("Palettes");
-                l_data_ptr != nullptr) {
-                printf("%s: %p\n", l_data_ptr->name, l_data_ptr->ea);
-            }
+      image.make_symbol("PatternTable", uld::symbol_t::type_object, uld::symbol_t::bind_global, PatternTable);
+      image.make_symbol("NameTable",    uld::symbol_t::type_object, uld::symbol_t::bind_global, NameTable);
+      image.make_symbol("AttrTable",    uld::symbol_t::type_object, uld::symbol_t::bind_global, AttrTable);
+      image.make_symbol("PaletteTable", uld::symbol_t::type_object, uld::symbol_t::bind_global, PaletteTable);
+      image.make_symbol("GlobalMem",    uld::symbol_t::type_object, uld::symbol_t::bind_global, Scratch);
 
-            // show the internal game tables
-            if(uld::symbol_t*
-                l_call_ptr = l_image.find_symbol("UploadU8PatternData");
-                l_call_ptr != nullptr) {
-                printf("%s(): %p\n", l_call_ptr->name, l_call_ptr->ra);
-            }
-            if(uld::symbol_t*
-                l_call_ptr = l_image.find_symbol("ConvertU8toU2");
-                l_call_ptr != nullptr) {
-                printf("%s(): %p\n", l_call_ptr->name, l_call_ptr->ra);
-            }
+    //    image.make_symbol("print", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(print));
+            
+      image.make_symbol("gbAppInit", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbAppInit));
+    //    image.make_symbol("gbAppRunning", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbAppRunning));
+      image.make_symbol("gbAppClose", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbAppClose));
+    //    image.make_symbol("gbPanic", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbPanic));
+      image.make_symbol("gbRandomSeed", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbRandomSeed));
+      image.make_symbol("gbRandom", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbRandom));
+      image.make_symbol("gbTime", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbTime));
+    //    image.make_symbol("gbSetTransparentColor", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbSetTransparentColor));
+    //    image.make_symbol("gbClear", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbClear));
+    //    image.make_symbol("gbSwap", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbSwap));
+      image.make_symbol("gbPatternData", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbPatternData));
+      image.make_symbol("gbDrawSprite", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbDrawSprite));
+      image.make_symbol("gbPaletteData", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbPaletteData));
+      image.make_symbol("gbDrawChar", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbDrawChar));
+      image.make_symbol("gbDrawText", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbDrawText));
+    //    image.make_symbol("gbDrawTileNames", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbDrawTileNames));
+    //    image.make_symbol("gbDrawTileAttributes", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbDrawTileAttributes));
+      image.make_symbol("gbGetButtonState", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbGetButtonState));
+      image.make_symbol("gbGetButtonDelta", uld::symbol_t::type_function, uld::symbol_t::bind_global, (void*)std::addressof(gbGetButtonDelta));
 
-            // show the game functions
-            if(uld::symbol_t*
-                l_call_ptr = l_image.find_symbol("init");
-                l_call_ptr != nullptr) {
-                printf("%s(): %p\n", l_call_ptr->name, l_call_ptr->ra);
-                p_init_call = reinterpret_cast<init_call_type>(l_call_ptr->ra);
-            }
-            if(uld::symbol_t*
-                l_call_ptr = l_image.find_symbol("update");
-                l_call_ptr != nullptr) {
-                printf("%s(): %p\n", l_call_ptr->name, l_call_ptr->ra);
-                p_update_call = reinterpret_cast<update_call_type>(l_call_ptr->ra);
-            }
-            if(uld::symbol_t*
-                l_call_ptr = l_image.find_symbol("uninit");
-                l_call_ptr != nullptr) {
-                printf("%s(): %p\n", l_call_ptr->name, l_call_ptr->ra);
-                p_dispose_call = reinterpret_cast<dispose_call_type>(l_call_ptr->ra);
-            }
-
-            // run the program: init()
-            if(p_init_call != nullptr) {
-                l_rc = p_init_call();
-                printf("--- init: rc=%d\n", l_rc);
-                if(l_rc != 0) {
-                    printf("-!- FAILED.\n");
-                    return;
-                }
-            }
-
-            // run the program: update() a few times
-            if(p_update_call == nullptr) {
-                printf("-!- FAILED: update() is not defined or inaccessible.\n");
-                return;
-            }
-            p_update_call(128);
-
-            // run the program: goodbye
-            if(p_dispose_call != nullptr) {
-                l_rc = p_dispose_call();
-                printf("--- dispose: rc=%d\n", l_rc);
-                if(l_rc != 0) {
-                    printf("-!- FAILED.\n");
-                    return;
-                }
-            }
-
-            printf("bye.\n");
-        }
-        f_unmount(pSD->pcName);
-    }
+      if(image.load(game)) {
+          auto init = get_function<int>(image, "init");
+          if(init == nullptr) {
+              return;
+          }
+          auto update = get_function<void>(image, "update");
+          if(update == nullptr) {
+              return;
+          }
+          init();
+          update();
+      }
 }
 
 int   main(int, char**)
 {
       time_init();
       stdio_init_all();
-      boot("game.o");
+      sd_card_t*  pSD = sd_get_by_num(0);
+      FRESULT     fr  = f_mount(&pSD->fatfs, pSD->pcName, 1);
+      if(fr == FR_OK) {
+          boot("tetris.o");
+          printf("bye.\n");
+          f_unmount(pSD->pcName);
+      }
       return 0;
 }

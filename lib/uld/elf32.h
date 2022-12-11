@@ -51,18 +51,19 @@ class factory
 
   private:
           auto   uld_get_local_section(int) noexcept -> section_t*;
-          auto   uld_get_local_section(symbol_t*) noexcept -> section_t*;
+          auto   uld_get_local_section(symbol_t*, int* = nullptr) noexcept -> section_t*;
           auto   uld_get_local_symbol(int) noexcept -> symbol_t*;
           auto   uld_get_global_address(symbol_t*) noexcept -> std::uint8_t*;
           auto   uld_get_symbol_address(symbol_t*) noexcept -> std::uint8_t*;
-          auto   uld_get_symbol_address(symbol_t*, int) noexcept -> std::uint8_t*;
+          auto   uld_get_symbol_address(symbol_t*, std::int32_t) noexcept -> std::uint8_t*;
           auto   uld_get_virtual_address(symbol_t*) noexcept -> std::uint8_t*;
-          auto   uld_get_virtual_address(symbol_t*, int) noexcept -> std::uint8_t*;
+          auto   uld_get_virtual_address(symbol_t*, std::int32_t) noexcept -> std::uint8_t*;
           auto   uld_get_base_address(symbol_t*) noexcept -> std::uint8_t*;
 
-          bool   uld_get_section_data(section_t*) noexcept;
-          void   uld_set_section_data(section_t*) noexcept;
+          auto   uld_get_section_data(elf32_bfd_t&, Elf32_Shdr&, int, std::int32_t, std::int32_t) noexcept -> std::uint8_t*;
+          auto   uld_get_section_data(elf32_bfd_t&, int, std::int32_t, std::int32_t) noexcept -> std::uint8_t*;
           bool   uld_load_section(elf32_bfd_t&, Elf32_Shdr&, int) noexcept;
+          bool   uld_load_section(elf32_bfd_t&, Elf32_Shdr&, int, std::int32_t, std::int32_t) noexcept;
           bool   uld_load_symbol(elf32_bfd_t&, Elf32_Shdr&, Elf32_Sym&, int) noexcept;
           bool   uld_resolve_rel(elf32_bfd_t&, Elf32_Shdr&, Elf32_Rel&, std::int32_t = 0) noexcept;
           bool   uld_resolve_rela(elf32_bfd_t&, Elf32_Shdr&, Elf32_Rela&) noexcept;

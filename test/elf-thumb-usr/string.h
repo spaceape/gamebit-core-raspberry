@@ -14,7 +14,8 @@
 //   unsigned long int strtoul(const char* nptr, char** endptr, int base);
 //   unsigned long long int strtoull(const char* nptr, char** endptr, int base);
 //  
-
+int  sprintf(char* restrict, const char* restrict, ...) __attribute__((long_call));
+int  snprintf(char* restrict, size_t, const char* restrict, ...) __attribute__((long_call));
 
 // String manipulation
 // strcpy

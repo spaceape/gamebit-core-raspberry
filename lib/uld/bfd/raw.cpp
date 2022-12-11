@@ -35,7 +35,7 @@ namespace uld {
 {
       file_ptr l_file_ptr = file_ptr::make_file_cb();
       FRESULT  l_rc       = f_open(l_file_ptr, file_name, file_open_mode);
-      if (l_rc == FR_OK) {
+      if(l_rc == FR_OK) {
           char         l_magic[SARMAG];
           unsigned int l_read_size;
           // seek to the specified file position, if we are in an archive

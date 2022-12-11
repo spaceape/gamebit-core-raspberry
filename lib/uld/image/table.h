@@ -77,8 +77,8 @@ class table: public pool<Xt, PageSize>
 
     inline  void  advance() noexcept {
             while(m_page) {
+                ++m_node;
                 if(m_node < m_page->get_next_ptr()) {
-                    ++m_node;
                     return;
                 }
                 m_page = m_page->m_page_next;
@@ -174,17 +174,6 @@ class table: public pool<Xt, PageSize>
   }
 
   inline  ~table() {
-  }
-
-  inline  node_type*  find_by_name(const char* name) noexcept {
-          iterator i_node = begin();
-          while(i_node) {
-              if(std::strcmp(i_node->name, name) == 0) {
-                  return i_node;
-              }
-              i_node++;
-          }
-          return nullptr;
   }
 
   inline  iterator begin() const noexcept {

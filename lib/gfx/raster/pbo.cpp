@@ -286,12 +286,22 @@ bool  pbo::reset() noexcept
 
 bool  pbo::reset(int format, int sx, int sy) noexcept
 {
-      return m_ptr = make_ptr(format, sx, sy);
+      if((sx > 0) &&
+          (sy > 0)) {
+          return m_ptr = make_ptr(format, sx, sy);
+      } else
+          return reset();
 }
 
 bool  pbo::reset(int format, int sx, int sy, std::uint8_t* data, std::size_t size) noexcept
 {
-      return m_ptr = make_ptr(format, sx, sy, data, size);
+      if((sx > 0) &&
+          (sy > 0) &&
+          (data != nullptr) &&
+          (size > 0)) {
+          return m_ptr = make_ptr(format, sx, sy, data, size);
+      } else
+          return reset();
 }
 
 void  pbo::dispose() noexcept

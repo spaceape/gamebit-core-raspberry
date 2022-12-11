@@ -24,5 +24,54 @@
 #include <uld.h>
 
 namespace uld {
+
+/* e_memory
+   Memory allocation error
+*/
+constexpr int e_memory = 2;
+
+/* e_access
+   Access error - could not fetch expected data.
+*/
+constexpr int e_access = 3;
+
+/* e_nosym
+   Symbol does not exist or could not be found.
+*/
+constexpr int e_nosym = 12;
+
+/* e_norel
+   Relocation can not be applied, it's either undefined or not implemented.
+*/
+constexpr int e_norel = 13;
+
+/* e_noreach
+   Trying to set an address field to a memory location outside its boundaries.
+*/
+constexpr int e_noreach = 14;
+
+/* e_nodef
+   General fault while trying to define symbol.
+*/
+constexpr int e_nodef = 15;
+
+/* e_redef
+   Symbol redefinition.
+*/
+constexpr int e_redef = 16;
+
+/* e_invalid_host
+*/
+constexpr int e_invalid_host = 127;
+
+/* e_invalid_target
+*/
+constexpr int e_invalid_target = 128;
+
+/* e_fault
+   Generic internal fault
+*/
+constexpr int e_fault = 255;
+
 /*namespace uld*/ }
 #endif

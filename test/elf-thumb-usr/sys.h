@@ -41,6 +41,13 @@ typedef _Bool bool;
 // <stdlib.h>	General Utility Functions
 // <string.h>	String Functions
 // <time.h>	Date and Time Functions
+/* abort()
+*/
+
+int __aeabi_idiv(int, int) __attribute__((weak));
+unsigned int __aeabi_uidiv(unsigned int, unsigned int) __attribute__((weak));
+int __aeabi_idivmod(int, int) __attribute__((weak));
+unsigned int __aeabi_uidivmod(unsigned int, unsigned int) __attribute__((weak));
 
 /* abort()
 */

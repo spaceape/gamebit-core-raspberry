@@ -23,6 +23,7 @@
 **/
 #include "gfx.h"
 #include "dc.h"
+#include <limits>
 
 namespace gfx {
 

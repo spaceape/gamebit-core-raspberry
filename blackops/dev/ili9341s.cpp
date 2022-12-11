@@ -21,8 +21,8 @@
 **/
 #include "ili9341s.h"
 #include "display/ili9341.h"
-#include "display/cm256x16.h"
-#include "display/cs8x8.h"
+// #include "display/cm256x16.h"
+// #include "display/cs8x8.h"
 #include <hardware.h>
 
 namespace gfx {
@@ -62,8 +62,8 @@ static constexpr bool  lcd_use_dma = false;
       gpio_put(reset_pin, 0);
       m_io.set_monitor(this);
 
-      m_dev_cmo.reset(gfx::cmo::fmt_rgb_565, 256, g_cm256x16_std_data, sizeof(g_cm256x16_std_data));
-      m_dev_cso.reset(gfx::cso::fmt_1bpp, 8, 8, g_cs8x8_std_data, sizeof(g_cs8x8_std_data));
+      // m_dev_cmo.reset(gfx::cmo::fmt_rgb_565, 256, g_cm256x16_std_data, sizeof(g_cm256x16_std_data));
+      // m_dev_cso.reset(gfx::cso::fmt_1bpp, 8, 8, g_cs8x8_std_data, sizeof(g_cs8x8_std_data));
 }
 
       ili9341s::~ili9341s()

@@ -23,6 +23,7 @@
 #include "tile.h"
 #include "raster.h"
 #include "vector.h"
+#include "driver/hmm.h"
 #include <util.h>
 
 namespace gfx {
@@ -36,33 +37,16 @@ namespace gfx {
 {
 }
 
-// void  device::sdr_surface_push(surface* surface_ptr, surface*& save_surface, mapping_base_t*& save_mapping) noexcept
-// {
-//       save_surface = s_surface_ptr;
-//       save_mapping = s_surface_mapping;
-//       s_surface_ptr = surface_ptr;
-//       if(s_surface_ptr->m_mid) {
-//           s_surface_mapping = static_cast<mapping_base_t*>(surface_ptr->m_mid);
-//       } else
-//           s_surface_mapping = nullptr;
-// }
-
 bool  device::sdr_surface_prepare(surface* surface_ptr, mapping_base_t* mapping_ptr)  noexcept
 {
-      bool            l_result;
+      bool            l_result = true;
       surface*        p_restore_surface;
       mapping_base_t* p_restore_mapping;
       gfx_push_surface(surface_ptr, p_restore_surface, p_restore_mapping);
-      l_result = surface_ptr->gfx_prepare(this);
+      // l_result = surface_ptr->gfx_prepare(this);
       gfx_pop_surface(p_restore_surface, p_restore_mapping);
       return l_result;
 }
-
-// void  device::sdr_surface_pop(surface* surface_ptr, surface*& restore_surface, mapping_base_t*& restore_mapping) noexcept
-// {
-//       s_surface_mapping = restore_mapping;
-//       s_surface_ptr     = restore_surface;
-// }
 
 bool  device::sdr_surface_release(surface* surface_ptr) noexcept
 {
@@ -102,9 +86,6 @@ auto  device::sdr_make_mapping(surface* surface_ptr, int px, int py, int sx, int
           if(bool
               l_prepare_success = sdr_surface_prepare(surface_ptr, p_mapping);
               l_prepare_success == true) {
-              // // unsigned int l_format       = p_mapping->format;
-              // // unsigned int l_render_flags = p_mapping->render_flags;
-              // unsigned int l_option_flags      = p_mapping->option_flags;
               if(p_mapping->option_flags & surface::opt_graphics_flags) {
                   p_mapping->cm = m_dev_cmo;
                   if(p_mapping->option_flags & surface::opt_request_tile_graphics) {
@@ -145,7 +126,7 @@ bool  device::sdr_reset_format(surface* surface_ptr, mapping_t* mapping_ptr, uns
       bool   l_cmo_rq = false;
       bool   l_cmo_up = false;
       // additive setup
-      if(format & fmt_tile) {
+      if(mapping_ptr->option_flags & opt_request_tile_graphics) {
           int  l_csx = get_div_ub(mapping_ptr->wsx, glyph_sx);
           int  l_csy = get_div_ub(mapping_ptr->wsy, glyph_sy);
           if(bool
@@ -155,7 +136,7 @@ bool  device::sdr_reset_format(surface* surface_ptr, mapping_t* mapping_ptr, uns
           }
           l_cbo_rq = true;
       }
-      if(format & fmt_raster) {
+      if(mapping_ptr->option_flags & opt_request_raster_graphics) {
           if(bool
               l_pbo_success = l_pbo.reset(fmt_indexed, mapping_ptr->wsx, mapping_ptr->wsy);
               l_pbo_success == true) {
@@ -342,7 +323,6 @@ void  device::set_option_flags(surface* surface_ptr, unsigned int option_flags) 
 
 /* set_render_flags()
    reset surface rendering flags
-   Note that this will not work until *after* `map()` and `remap()` finish - this is quite intentional.
 */
 void  device::set_render_flags(surface* surface_ptr, unsigned int render_flags) noexcept
 {

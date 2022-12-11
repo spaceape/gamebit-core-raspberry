@@ -137,13 +137,13 @@ struct page: public page_base_t<Xt>
           }
           l_byte_count = l_page_count * size;
           if(l_byte_count > 0) {
-              void* l_byte_ptr   = malloc(l_byte_count);
+              void* l_byte_ptr = malloc(l_byte_count);
               if(l_byte_ptr != nullptr) {
                   l_page_ptr = reinterpret_cast<base_type*>(l_byte_ptr);
                   l_page_ptr->m_used = 0;
                   l_page_ptr->m_gto_base = 0;
                   l_page_ptr->m_gto_next = 0;
-                  l_page_ptr->m_size = get_capacity(size);
+                  l_page_ptr->m_size = get_capacity(l_byte_count);
                   l_page_ptr->m_page_prev = prev;
                   if(l_page_ptr->m_page_prev != nullptr) {
                       l_page_ptr->m_gto_base = l_page_ptr->m_page_prev->m_gto_next;

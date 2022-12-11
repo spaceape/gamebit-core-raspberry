@@ -28,7 +28,7 @@ bool   gfx_unmap(gfx::surface*) noexcept;
 
 void   gfx_free_surface(gfx::surface*) noexcept;
 
-void   gfx_get_display_sx() noexcept;
-void   gfx_get_display_sy() noexcept;
+int    gfx_get_display_sx() noexcept;
+int    gfx_get_display_sy() noexcept;
 
 #endif

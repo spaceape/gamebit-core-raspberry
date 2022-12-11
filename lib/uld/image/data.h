@@ -81,7 +81,7 @@ struct symbol_t
   unsigned int   flags;
   int            size;
   std::uint8_t*  ea;       // effective address  (where in the memory the symbol data is effectively stored)
-  std::uint8_t*  ra;       // virtual address (what "the process" should see as the address of the symbol)
+  std::uint8_t*  ra;       // runtime address (what "the process" should see as the address of the symbol)
 
   static constexpr void set_int8(symbol_t* symbol, int value) noexcept
   {
@@ -239,7 +239,8 @@ struct section_t: public symbol_t
   static constexpr unsigned int data_string   = 0x00002000;  // section contains a null-terminated string table
   static constexpr unsigned int data_bits     = 0x0000ff00;
 
-  int           offset;         // offset of the section within the supporting section
+  int           offset_base;    // offset of the section within the supporting segment
+  int           offset_last;
   segment*      support;        // supporting segment for the section
 
   static constexpr unsigned int type_bits_from_shdr(unsigned int type) noexcept
@@ -271,7 +272,7 @@ struct binding_t
   short int     symbol_index;           // index of the symbol in the source symbol table
   short int     source_index;           // index of the section in the source section table where the symbol resides
   int           source_offset_base;     // offset within the source section where the symbol data starts
-  int           source_offset_last;     // offset within the source section where the symbol date ends
+  int           source_offset_last;     // offset within the source section where the symbol data ends
 };
 
 /*namespace uld*/ }

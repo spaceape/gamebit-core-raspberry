@@ -1,8 +1,11 @@
 # host
 # Host support library
 # contains host support code for:
-# - memory management (TODO: cleanup - direct port from my AVR codebase, RPico has much of the C++ stdlib support available)
-# - serial communication
+# - memory management
+# - streams
+# - abstract device tree
+# - utilities
+
 set(NAME "host")
 set(PREFIX)
 

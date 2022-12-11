@@ -300,12 +300,28 @@ cso::ptr&  cso::ptr::operator=(ptr&& rhs) noexcept
 
 bool  cso::reset(unsigned int format, int sx, int sy) noexcept
 {
-      return m_ptr = make_ptr(format, sx, sy);
+      if((sx > 0) &&
+          (sy > 0)) {
+          return m_ptr = make_ptr(format, sx, sy);
+      }
+      else {
+          dispose();
+          return true;
+      }
 }
 
 bool  cso::reset(unsigned int format, int sx, int sy, std::uint8_t* data, std::size_t size) noexcept
 {
-      return m_ptr = make_ptr(format, sx, sy, data, size);
+      if((sx > 0) &&
+          (sy > 0) &&
+          (data != nullptr) &&
+          (size > 0)) {
+          return m_ptr = make_ptr(format, sx, sy, data, size);
+      }
+      else {
+          dispose();
+          return true;
+      }
 }
 
 void  cso::dispose() noexcept

@@ -28,7 +28,8 @@ set(srcs
 )
 
 set(libs
+  pico_stdlib host
 )
 
 add_library(${NAME} ${srcs})
-target_link_libraries(${NAME} pico_stdlib host)
+target_link_libraries(${NAME} ${libs})

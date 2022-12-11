@@ -26,7 +26,7 @@ namespace gfx {
 
       std::uint8_t*(*ac::gfx_cso_reserve)(int) noexcept = hmm::cso_reserve;
       std::uint8_t*(*ac::gfx_cso_dispose)(std::uint8_t*, int) noexcept = hmm::cso_dispose;
-      std::uint8_t*(*ac::gfx_cmo_reserve)(int) noexcept = hmm::cso_reserve;
+      std::uint8_t*(*ac::gfx_cmo_reserve)(int) noexcept = hmm::cmo_reserve;
       std::uint8_t*(*ac::gfx_cmo_dispose)(std::uint8_t*, int) noexcept = hmm::cso_dispose;
       std::uint8_t*(*ac::gfx_cbo_reserve)(int) noexcept = hmm::cbo_reserve;
       std::uint8_t*(*ac::gfx_cbo_dispose)(std::uint8_t*, int) noexcept = hmm::cbo_dispose;

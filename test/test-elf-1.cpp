@@ -101,18 +101,77 @@ void  test_cache_01() noexcept
 
 void  test_pool_01() noexcept
 {
-      int                 l_index = 0;
-      uld::string_table_t l_strtab;
-      for(l_index = 0; l_index < 4096; l_index++) {
-          l_strtab.make_string("01234567");
-      }
-      printf("--- str[127] = \"%s\".\n", l_strtab.get_string(127));
-      printf("--- str[128] = \"%s\".\n", l_strtab.get_string(128));
-      printf("--- str[129] = \"%s\".\n", l_strtab.get_string(129));
+      uld::pool<std::uint8_t, 256> l_pool;
+      auto l_data = l_pool.raw_get(1536);
+      printf("--- alloc data=%p\n", l_data);
 }
 
 void  test_pool_02() noexcept
 {
+}
+
+void  test_symtab_01() noexcept
+{
+      char         l_name[16];
+      uld::target  l_target(EM_ARM, ELFCLASS32, true, true);
+      uld::image   l_image(std::addressof(l_target));
+      for (int index = 0; index < 1024; index++) {
+          snprintf(l_name, 16, "symbol.%d", index);
+          uld::symbol_t* l_decl_ptr = l_image.make_symbol(l_name, uld::symbol_t::type_object, uld::symbol_t::bind_global, nullptr);
+          printf("--- Generating symbol `%s`\n", l_name);
+          uld::symbol_t* l_data_ptr = l_image.find_symbol(l_name);
+          if(l_decl_ptr != l_data_ptr) {
+              printf("!!! FAIL at index %d (symbol name `%s`)\n", index, l_name);
+              break;;
+          }
+      }
+
+      for (int index = 0; index < 1024; index++) {
+          snprintf(l_name, 16, "symbol.%d", index);
+          printf("--- Locating symbol `%s`\n", l_name);
+          uld::symbol_t* l_data_ptr = l_image.find_symbol(l_name);
+          if((l_data_ptr == nullptr) ||
+              (std::strncmp(l_name, l_data_ptr->name, 16) != 0)) {
+              printf("!!! FAIL at index %d (symbol name `%s`)\n", index, l_name);
+              break;;
+          }
+      }
+}
+
+struct ram_page_t
+{
+  ram_page_t* next;
+  int         size;
+};
+
+void  test_ram_01() noexcept
+{
+      ram_page_t* i_page;
+      ram_page_t* i_next;
+      ram_page_t* l_page_head = nullptr;
+      ram_page_t* l_page_tail = nullptr;
+      int         l_page_size = 2048;
+      int         l_page_count = 1024;
+      // allocate one and two kilobytes pages, see how much it adds to
+      for(int x = 0; x < l_page_count; x++) {
+          auto i_page = reinterpret_cast<ram_page_t*>(malloc(l_page_size));
+          i_page->next = nullptr;
+          i_page->size = l_page_size;
+          if(l_page_tail != nullptr) {
+              l_page_tail->next = i_page;
+          } else
+              l_page_head = i_page;
+          l_page_tail = i_page;
+          printf("--- alloc page %d: %p size %d\n", x, i_page, l_page_size);
+      }
+
+      // delete allocated pages
+      i_page = l_page_head;
+      while(i_page) {
+          i_next = i_page->next;
+          delete i_page;
+          i_page = i_next;
+      }
 }
 
 void  test_elf_01() noexcept
@@ -496,18 +555,20 @@ int   main(int, char**)
       time_init();
       stdio_init_all();
 
-      test_dummy_01();
-      test_dummy_02();
+      // test_dummy_01();
+      // test_dummy_02();
+      // test_symtab_01();
       // test_cache_01();
-      // test_pool_01();
+      test_pool_01();
       // // test_pool_02();
-      // // test_elf_sumxy_01();
+      // test_ram_01();
+      // test_elf_sumxy_01();
       // test_elf_sumxy_02();
       // test_elf_sumxy_03();
       // test_elf_sumxy_04();
       // test_elf_data_01();
       // test_elf_data_02();
-      test_elf_call_01();
+      // test_elf_call_01();
 
       return 0;
 }

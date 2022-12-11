@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.21)
 
-set(PICO_SDK_PATH "/opt/raspberry/pico-sdk")
+# set(PICO_SDK_PATH "/opt/raspberry/pico-sdk")
 
 include(pico_sdk_import.cmake)
 
@@ -16,12 +16,13 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_GENERATOR "Unix Makefiles")
 set(CMAKE_COLOR_MAKEFILE ON)
-set(CMAKE_VERBOSE_MAKEFILE OFF)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
-if(${CMAKE_BUILD_TYPE} EQUAL "Debug")
-  set(CMAKE_VERBOSE_MAKEFILE OFF)
+# if(${CMAKE_BUILD_TYPE} EQUAL "Debug")
+  set(CMAKE_VERBOSE_MAKEFILE ON)
   set(PICO_DEOPTIMIZED_DEBUG 1)
-endif()
+# endif()
+# set(PICO_NO_GC_SECTIONS TRUE)
 
 if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
@@ -46,7 +47,11 @@ add_compile_options(
   -Wall
   -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
   -Wno-unused-function # we have some for the docs that aren't called
+  -fno-common
   -fsigned-char
+  # -falign-functions=16
+  # -falign-labels=4
+  # -falign-jumps=4
 )
 
 set(GLOBAL_DEFS)

@@ -7,7 +7,7 @@ export CPU=cortex-m0plus
 export DPU=soft
 export FPU=soft
 export GPU=
-export BUILD_TYPE=
+export BUILD_TYPE=none
 export BUILD_DIR=
 
 ifeq ($(BUILD_TYPE),)
@@ -25,7 +25,7 @@ ifeq ($(BUILD_DIR),)
   BUILD_DIR=$(BASE_DIR)/base/$(BUILD_TYPE)
 endif
 
-export SYSFLAGS=-mcpu=$(CPU) -mthumb -nostdlib -falign-functions=4 -falign-labels=4
+export SYSFLAGS=-mcpu=$(CPU) -mthumb -ffreestanding -nostdlib -falign-functions=4
 
 export INCLUDES=-I$(WORKSPACE)/include -I$(WORKSPACE)/sys -I$(PWD)
 export DEFINES=

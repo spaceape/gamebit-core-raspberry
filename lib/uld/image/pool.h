@@ -270,10 +270,10 @@ class pool<std::uint8_t, PageSize>
               page_type*  i_page_ptr    = m_page_head;
               int         l_page_offset = offset;
               while(i_page_ptr) {
-                  if(l_page_offset < i_page_ptr->m_gto_next) {
-                      return i_page_ptr->get_node_ptr(l_page_offset);
+                  if((l_page_offset >= i_page_ptr->m_gto_base) &&
+                      (l_page_offset < i_page_ptr->m_gto_next)) {
+                      return i_page_ptr->get_node_ptr(l_page_offset - i_page_ptr->m_gto_base);
                   }
-                  l_page_offset -= i_page_ptr->m_gto_next;
                   i_page_ptr     = i_page_ptr->m_page_next;
               }
           }

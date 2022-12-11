@@ -22,6 +22,7 @@
 #include "target.h"
 #include <elf.h>
 #include "hardware/regs/addressmap.h"
+#include <limits>
 
 namespace uld {
 

@@ -7,6 +7,7 @@ void* realloc(void*, size_t) __attribute__((long_call));
 void  free(void*) __attribute__((long_call));
 
 void* memcpy(void* restrict, const void* restrict s2, size_t) __attribute__((long_call));
+void* memset(void* restrict, int, size_t) __attribute__((long_call));
 
 // finds the next token in a byte string
 // (function)

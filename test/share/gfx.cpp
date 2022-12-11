@@ -24,7 +24,7 @@ void  gfx_set_option_flags(gfx::surface* surface_ptr, unsigned int option_flags)
 
 void  gfx_set_render_flags(gfx::surface* surface_ptr, unsigned int render_flags) noexcept
 {
-      return g_display_ptr->set_option_flags(surface_ptr, render_flags);
+      return g_display_ptr->set_render_flags(surface_ptr, render_flags);
 }
 
 void  gfx_set_window_size(gfx::surface* surface_ptr, int sx, int sy) noexcept
@@ -72,12 +72,12 @@ void  gfx_free_surface(gfx::surface* surface_ptr) noexcept
       delete surface_ptr;
 }
 
-void  gfx_get_display_sx() noexcept
+int   gfx_get_display_sx() noexcept
 {
-      g_display_ptr->get_display_sx();
+      return g_display_ptr->get_display_sx();
 }
 
-void  gfx_get_display_sy() noexcept
+int   gfx_get_display_sy() noexcept
 {
-      g_display_ptr->get_display_sy();
+      return g_display_ptr->get_display_sy();
 }

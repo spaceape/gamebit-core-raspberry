@@ -90,7 +90,7 @@ bool  cbo::reset(std::uint8_t format, int sx, int sy) noexcept
           dispose();
           if((l_reserve_size > 0) &&
               (l_reserve_size <= size_max)) {
-              if(m_data = gfx_cbo_reserve(l_reserve_size); m_data != nullptr) {
+              if(m_data = (*gfx::ac::gfx_cbo_reserve)(l_reserve_size); m_data != nullptr) {
                   m_sx     = sx;
                   m_sy     = sy;
                   m_format = format;

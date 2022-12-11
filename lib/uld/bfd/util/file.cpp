@@ -21,6 +21,7 @@
 **/
 #include "file.h"
 #include <cstring>
+#include <limits>
 
 namespace uld {
 namespace util {

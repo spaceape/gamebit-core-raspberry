@@ -30,7 +30,13 @@ target_compile_definitions(
       PICO_HEAP_SIZE=196608
 )
 
-add_executable(test-elf-3 test-elf-3.cpp hw_config.c)
+add_executable(test-elf-3
+  share/sys.cpp
+  share/file.cpp
+  share/string.cpp
+  test-elf-3.cpp
+  hw_config.c
+)
 target_link_libraries(test-elf-3 fat uld blackops hardware_spi hardware_dma hardware_rtc pico_stdlib)
 target_compile_definitions(
   test-elf-3
@@ -45,10 +51,11 @@ add_executable(test-graphics-1
   share/gfx.cpp
   test-graphics-1.cpp hw_config.c
 )
-target_link_libraries(test-graphics-1 fat uld blackops hardware_spi hardware_dma hardware_rtc pico_stdlib)
-target_compile_definitions(
-  test-graphics-1
-  PRIVATE
-      PICO_STACK_SIZE=4096
-      PICO_HEAP_SIZE=65536
-)
+target_link_libraries(test-graphics-1 pico_stdlib hardware_spi hardware_dma hardware_rtc blackops fat gfx)
+# target_compile_definitions(
+#   test-graphics-1
+#   PRIVATE
+#       PICO_STACK_SIZE=4096
+#       PICO_HEAP_SIZE=131072
+# )
+# pico_set_binary_type(test-graphics-1 no_flash)

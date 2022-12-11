@@ -31,4 +31,4 @@ set(srcs
 )
 
 add_library(${NAME} ${srcs})
-target_link_libraries(${NAME} hardware_spi hardware_dma hardware_rtc pico_stdlib)
+target_link_libraries(${NAME} pico_stdlib hardware_spi hardware_dma hardware_rtc)

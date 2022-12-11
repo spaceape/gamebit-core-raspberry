@@ -1,10 +1,9 @@
 #include "game.h"
 
-#define GB_RGB_TO_U32(red, green, blue) ((uint32_t)(0xFF000000 | ((red) & 0xFF) << 16 | ((green) & 0xFF) << 8 | ((blue) & 0xFF) << 0))
-#define GB_RGB_TO_U16(red, green, blue) GB_U32_TO_U16(GB_RGB_TO_U32((red), (green), (blue)))
-#define GB_U32_TO_U16(value) ((uint16_t)((value & 0x00F80000) >> 8 | ( value & 0x0000FC00) >> 5 | ( value & 0x000000F8) >> 3))
-#define GB_U16_TO_U32(value) ((uint32_t)(0xFF000000 | (((value & 0xF800) << 3 | (value & 0xF800) >> 2) << 8) | ((value & 0x07E0) << 5)| ((value & 0x001F) << 3)))
-#define GB_RGB GB_RGB_TO_U16
+// #define GB_RGB_TO_U32(red, green, blue) ((uint32_t)(0xFF000000 | ((red) & 0xFF) << 16 | ((green) & 0xFF) << 8 | ((blue) & 0xFF) << 0))
+// #define GB_RGB_TO_U16(red, green, blue) GB_U32_TO_U16(GB_RGB_TO_U32((red), (green), (blue)))
+// #define GB_U32_TO_U16(value) ((uint16_t)((value & 0x00F80000) >> 8 | ( value & 0x0000FC00) >> 5 | ( value & 0x000000F8) >> 3))
+// #define GB_U16_TO_U32(value) ((uint32_t)(0xFF000000 | (((value & 0xF800) << 3 | (value & 0xF800) >> 2) << 8) | ((value & 0x07E0) << 5)| ((value & 0x001F) << 3)))
 
 const uint8_t Patterns[8 * 8 * 1] = {
     // Brick wall pattern
